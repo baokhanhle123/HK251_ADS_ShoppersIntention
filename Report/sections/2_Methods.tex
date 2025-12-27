@@ -1,0 +1,461 @@
+\section{Tìm hiểu dữ liệu (Data Understanding)}
+
+\subsection{Mô tả bộ dữ liệu (Dataset Description)}
+
+Bộ dữ liệu được sử dụng trong nghiên cứu này là ``Online Shoppers Purchasing Intention Dataset'' \cite{sakar2018}, được công bố trên UCI Machine Learning Repository \cite{uci_dataset}. Dữ liệu được thu thập từ một website thương mại điện tử trong khoảng thời gian 1 năm, với mỗi phiên truy cập (session) thuộc về một người dùng khác nhau nhằm tránh xu hướng thiên lệch theo mùa, chiến dịch marketing, hoặc hồ sơ người dùng cụ thể.
+
+\textbf{Tổng quan bộ dữ liệu:}
+\begin{itemize}
+    \item \textbf{Số lượng mẫu (Instances)}: 12.330 phiên truy cập
+    \item \textbf{Số lượng thuộc tính (Features)}: 17 thuộc tính đầu vào + 1 biến mục tiêu
+    \item \textbf{Loại thuộc tính}: 10 thuộc tính số (numerical), 8 thuộc tính phân loại (categorical)
+    \item \textbf{Biến mục tiêu}: Revenue (TRUE/FALSE)
+    \item \textbf{Phân phối lớp}: 84.5\% FALSE (không mua), 15.5\% TRUE (có mua)
+    \item \textbf{Giá trị thiếu}: Không có
+\end{itemize}
+
+\subsubsection{Thuộc tính số (Numerical Features)}
+
+Bảng \ref{tab:numerical_features} mô tả chi tiết 10 thuộc tính số trong bộ dữ liệu.
+
+\begin{table}[H]
+\centering
+\caption{Mô tả các thuộc tính số (Numerical Features)}
+\label{tab:numerical_features}
+\small
+\begin{tabular}{|p{3.5cm}|p{8cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Mô tả} \\
+\hline
+Administrative & Số lượng trang quản trị tài khoản mà khách truy cập đã xem trong phiên \\
+\hline
+Administrative\_Duration & Tổng thời gian (giây) khách truy cập dành cho các trang quản trị tài khoản \\
+\hline
+Informational & Số lượng trang thông tin (về website, địa chỉ liên hệ) mà khách truy cập đã xem \\
+\hline
+Informational\_Duration & Tổng thời gian (giây) khách truy cập dành cho các trang thông tin \\
+\hline
+ProductRelated & Số lượng trang sản phẩm mà khách truy cập đã xem \\
+\hline
+ProductRelated\_Duration & Tổng thời gian (giây) khách truy cập dành cho các trang sản phẩm \\
+\hline
+BounceRates & Tỷ lệ thoát trung bình của các trang được truy cập --- phần trăm khách vào trang rồi rời đi mà không tương tác thêm \cite{google_analytics} \\
+\hline
+ExitRates & Tỷ lệ thoát trang trung bình --- phần trăm lượt xem trang là lượt cuối cùng trong phiên \cite{google_analytics} \\
+\hline
+PageValues & Giá trị trang trung bình của các trang được truy cập --- giá trị trung bình của trang trước khi hoàn thành giao dịch \cite{google_analytics} \\
+\hline
+SpecialDay & Độ gần với ngày đặc biệt (Ngày Valentine, Ngày của Mẹ...), giá trị từ 0 đến 1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Thuộc tính phân loại (Categorical Features)}
+
+Bảng \ref{tab:categorical_features} mô tả chi tiết 8 thuộc tính phân loại trong bộ dữ liệu.
+
+\begin{table}[H]
+\centering
+\caption{Mô tả các thuộc tính phân loại (Categorical Features)}
+\label{tab:categorical_features}
+\small
+\begin{tabular}{|p{3cm}|p{7cm}|p{2.5cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Mô tả} & \textbf{Số giá trị} \\
+\hline
+OperatingSystems & Hệ điều hành của khách truy cập & 8 \\
+\hline
+Browser & Trình duyệt của khách truy cập & 13 \\
+\hline
+Region & Khu vực địa lý nơi phiên truy cập bắt đầu & 9 \\
+\hline
+TrafficType & Nguồn traffic đưa khách đến website (banner, SMS, trực tiếp...) & 20 \\
+\hline
+VisitorType & Loại khách: ``New Visitor'', ``Returning Visitor'', ``Other'' & 3 \\
+\hline
+Weekend & Phiên truy cập có vào cuối tuần hay không (TRUE/FALSE) & 2 \\
+\hline
+Month & Tháng của phiên truy cập (Feb, Mar, May, June, Jul, Aug, Sep, Oct, Nov, Dec) & 10 \\
+\hline
+Revenue & \textbf{Biến mục tiêu}: Phiên có kết thúc bằng giao dịch mua hàng không (TRUE/FALSE) & 2 \\
+\hline
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Báo cáo chất lượng dữ liệu (Data Quality Report)}
+
+Báo cáo chất lượng dữ liệu đánh giá các khía cạnh quan trọng của bộ dữ liệu bao gồm: giá trị thiếu (missing values), phân phối dữ liệu, giá trị ngoại biệt (outliers), và tính nhất quán của dữ liệu.
+
+\subsubsection{Báo cáo chất lượng cho thuộc tính số}
+
+Bảng \ref{tab:quality_numerical} trình bày báo cáo chất lượng dữ liệu cho các thuộc tính số, bao gồm các thống kê mô tả và phần trăm giá trị thiếu.
+
+\begin{table}[H]
+\centering
+\caption{Báo cáo chất lượng dữ liệu cho thuộc tính số}
+\label{tab:quality_numerical}
+\small
+\begin{tabular}{|l|r|r|r|r|r|r|r|r|}
+\hline
+\textbf{Thuộc tính} & \textbf{Count} & \textbf{\% Miss} & \textbf{Min} & \textbf{Max} & \textbf{Mean} & \textbf{Median} & \textbf{Std} \\
+\hline
+Administrative & 12330 & 0.00 & 0 & 27 & 2.32 & 1.00 & 3.32 \\
+\hline
+Admin\_Duration & 12330 & 0.00 & 0 & 3398.75 & 80.82 & 7.50 & 176.70 \\
+\hline
+Informational & 12330 & 0.00 & 0 & 24 & 0.50 & 0.00 & 1.26 \\
+\hline
+Info\_Duration & 12330 & 0.00 & 0 & 2549.38 & 34.47 & 0.00 & 140.64 \\
+\hline
+ProductRelated & 12330 & 0.00 & 0 & 705 & 31.73 & 18.00 & 44.45 \\
+\hline
+Product\_Duration & 12330 & 0.00 & 0 & 63973.52 & 1194.75 & 598.94 & 1912.25 \\
+\hline
+BounceRates & 12330 & 0.00 & 0 & 0.20 & 0.022 & 0.003 & 0.048 \\
+\hline
+ExitRates & 12330 & 0.00 & 0 & 0.20 & 0.043 & 0.025 & 0.049 \\
+\hline
+PageValues & 12330 & 0.00 & 0 & 361.76 & 5.89 & 0.00 & 18.55 \\
+\hline
+SpecialDay & 12330 & 0.00 & 0 & 1.00 & 0.061 & 0.00 & 0.199 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Nhận xét:}
+\begin{itemize}
+    \item \textbf{Không có giá trị thiếu}: Tất cả các thuộc tính số đều có đầy đủ 12.330 giá trị.
+    \item \textbf{Phân phối lệch phải}: Hầu hết các thuộc tính có mean > median, cho thấy phân phối lệch phải (right-skewed) với nhiều giá trị nhỏ và một số giá trị cực đại lớn.
+    \item \textbf{Giá trị ngoại biệt tiềm ẩn}: ProductRelated\_Duration có max = 63973.52 giây (~17.7 giờ), cho thấy một số phiên duyệt web rất dài. Tương tự với Administrative\_Duration và Informational\_Duration.
+    \item \textbf{PageValues}: Median = 0 cho thấy đa số các trang không có giá trị Page Value (khách không mua hàng).
+\end{itemize}
+
+\subsubsection{Báo cáo chất lượng cho thuộc tính phân loại}
+
+Bảng \ref{tab:quality_categorical} trình bày báo cáo chất lượng dữ liệu cho các thuộc tính phân loại.
+
+\begin{table}[H]
+\centering
+\caption{Báo cáo chất lượng dữ liệu cho thuộc tính phân loại}
+\label{tab:quality_categorical}
+\small
+\begin{tabular}{|l|r|r|r|l|r|l|r|}
+\hline
+\textbf{Thuộc tính} & \textbf{Count} & \textbf{\% Miss} & \textbf{Card.} & \textbf{Mode} & \textbf{Mode \%} & \textbf{2nd Mode} & \textbf{2nd \%} \\
+\hline
+OperatingSystems & 12330 & 0.00 & 8 & 2 & 51.3\% & 1 & 24.4\% \\
+\hline
+Browser & 12330 & 0.00 & 13 & 2 & 63.9\% & 1 & 22.3\% \\
+\hline
+Region & 12330 & 0.00 & 9 & 1 & 38.4\% & 3 & 22.1\% \\
+\hline
+TrafficType & 12330 & 0.00 & 20 & 2 & 32.0\% & 1 & 27.1\% \\
+\hline
+VisitorType & 12330 & 0.00 & 3 & Returning & 85.6\% & New & 13.7\% \\
+\hline
+Weekend & 12330 & 0.00 & 2 & FALSE & 76.7\% & TRUE & 23.3\% \\
+\hline
+Month & 12330 & 0.00 & 10 & May & 27.3\% & Nov & 24.3\% \\
+\hline
+Revenue & 12330 & 0.00 & 2 & FALSE & 84.5\% & TRUE & 15.5\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Nhận xét:}
+\begin{itemize}
+    \item \textbf{Không có giá trị thiếu}: Tất cả các thuộc tính phân loại đều có đầy đủ giá trị.
+    \item \textbf{VisitorType}: 85.6\% là khách quay lại (Returning Visitor), cho thấy website có tỷ lệ khách hàng trung thành cao.
+    \item \textbf{Weekend}: Chỉ 23.3\% phiên truy cập vào cuối tuần.
+    \item \textbf{Month}: Tháng 5 (May) và tháng 11 (November) có lượng truy cập cao nhất, có thể liên quan đến các ngày lễ mua sắm.
+    \item \textbf{Revenue (Mất cân bằng lớp)}: Chỉ 15.5\% phiên kết thúc bằng mua hàng --- đây là vấn đề mất cân bằng lớp cần xử lý.
+\end{itemize}
+
+\subsubsection{Kiểm tra dữ liệu trùng lặp}
+
+Kiểm tra cho thấy có \textbf{125 dòng dữ liệu trùng lặp} (duplicate rows) trong bộ dữ liệu. Các dòng trùng lặp này có thể đại diện cho các phiên truy cập khác nhau với hành vi giống hệt nhau, hoặc là lỗi trong quá trình thu thập dữ liệu.
+
+\textbf{Quyết định}: Giữ nguyên các dòng trùng lặp vì chúng có thể đại diện cho các phiên truy cập hợp lệ từ những người dùng khác nhau có hành vi tương tự.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Phân tích dữ liệu khám phá (Exploratory Data Analysis)}
+
+\subsubsection{Phân phối biến mục tiêu (Target Distribution)}
+
+Hình \ref{fig:target_distribution} thể hiện phân phối của biến mục tiêu Revenue.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình từ RapidMiner
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}[Hình 1: Biểu đồ phân phối biến mục tiêu Revenue]\vspace{3cm}}}
+\caption{Phân phối biến mục tiêu Revenue}
+\label{fig:target_distribution}
+\end{figure}
+
+\textbf{Nhận xét}: Bộ dữ liệu có sự mất cân bằng đáng kể với tỷ lệ 84.5\% : 15.5\% (FALSE : TRUE), tương đương tỷ lệ mất cân bằng khoảng 5.5:1. Điều này đòi hỏi các kỹ thuật xử lý mất cân bằng lớp như SMOTE hoặc Oversampling.
+
+\subsubsection{Phân phối các thuộc tính số}
+
+Hình \ref{fig:numerical_distribution} thể hiện phân phối của các thuộc tính số chính.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình từ RapidMiner
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}[Hình 2: Phân phối các thuộc tính số (Histograms)]\vspace{4cm}}}
+\caption{Phân phối các thuộc tính số}
+\label{fig:numerical_distribution}
+\end{figure}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item Hầu hết các thuộc tính có phân phối lệch phải mạnh.
+    \item PageValues có đa số giá trị = 0 (khách không mua hàng).
+    \item ProductRelated và ProductRelated\_Duration có phạm vi giá trị rộng nhất.
+\end{itemize}
+
+\subsubsection{Ma trận tương quan (Correlation Matrix)}
+
+Hình \ref{fig:correlation_matrix} thể hiện ma trận tương quan giữa các thuộc tính số.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình từ RapidMiner
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}[Hình 3: Ma trận tương quan (Correlation Heatmap)]\vspace{4cm}}}
+\caption{Ma trận tương quan giữa các thuộc tính số}
+\label{fig:correlation_matrix}
+\end{figure}
+
+\textbf{Nhận xét về tương quan với Revenue}:
+\begin{itemize}
+    \item \textbf{PageValues}: Tương quan dương mạnh nhất với Revenue (~0.49) --- thuộc tính quan trọng nhất.
+    \item \textbf{BounceRates và ExitRates}: Tương quan âm với Revenue --- khách có tỷ lệ thoát cao ít có khả năng mua.
+    \item \textbf{ProductRelated\_Duration}: Tương quan dương --- khách dành nhiều thời gian xem sản phẩm có xu hướng mua hàng hơn.
+\end{itemize}
+
+\textbf{Nhận xét về tương quan giữa các thuộc tính}:
+\begin{itemize}
+    \item BounceRates và ExitRates có tương quan cao (~0.91) --- có thể xem xét loại bỏ một trong hai.
+    \item Số lượng trang và thời gian duyệt có tương quan cao (Administrative với Administrative\_Duration, v.v.).
+\end{itemize}
+
+\subsubsection{So sánh thuộc tính theo Revenue}
+
+Hình \ref{fig:features_by_revenue} so sánh các thuộc tính quan trọng giữa nhóm mua hàng và không mua hàng.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình từ RapidMiner
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}[Hình 4: So sánh các thuộc tính chính theo Revenue (Box plots)]\vspace{4cm}}}
+\caption{So sánh các thuộc tính theo Revenue}
+\label{fig:features_by_revenue}
+\end{figure}
+
+\subsubsection{Tỷ lệ mua hàng theo các thuộc tính phân loại}
+
+Hình \ref{fig:revenue_by_categorical} thể hiện tỷ lệ mua hàng theo các thuộc tính phân loại quan trọng.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình từ RapidMiner
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}[Hình 5: Tỷ lệ mua hàng theo Month và VisitorType]\vspace{4cm}}}
+\caption{Tỷ lệ mua hàng theo tháng và loại khách hàng}
+\label{fig:revenue_by_categorical}
+\end{figure}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item \textbf{Theo tháng}: Tháng 11 (November) có tỷ lệ mua hàng cao nhất, có thể liên quan đến mùa mua sắm cuối năm và Black Friday. Tháng 5 (May) cũng có tỷ lệ cao do các ngày lễ như Ngày của Mẹ.
+    \item \textbf{Theo loại khách}: Khách quay lại (Returning Visitor) có tỷ lệ mua hàng cao hơn đáng kể so với khách mới (New Visitor).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Chuẩn bị dữ liệu (Data Preparation)}
+
+Phần này trình bày các bước tiền xử lý dữ liệu được thực hiện trong RapidMiner để chuẩn bị dữ liệu cho việc huấn luyện mô hình.
+
+\subsection{Xử lý giá trị thiếu (Missing Values)}
+
+Như đã phân tích trong báo cáo chất lượng dữ liệu, bộ dữ liệu \textbf{không có giá trị thiếu}. Do đó, không cần áp dụng kỹ thuật xử lý giá trị thiếu.
+
+\textbf{RapidMiner}: Nếu cần, có thể sử dụng operator ``Replace Missing Values'' với các phương pháp như mean, median, hoặc mode.
+
+\subsection{Xử lý giá trị ngoại biệt (Outliers)}
+
+Phân tích dữ liệu cho thấy một số thuộc tính có giá trị ngoại biệt tiềm ẩn:
+\begin{itemize}
+    \item \textbf{ProductRelated\_Duration}: Max = 63973.52 giây (~17.7 giờ)
+    \item \textbf{Administrative\_Duration}: Max = 3398.75 giây (~57 phút)
+    \item \textbf{PageValues}: Max = 361.76
+\end{itemize}
+
+\textbf{Quyết định}: \textbf{Giữ nguyên các giá trị ngoại biệt} vì:
+\begin{enumerate}
+    \item Đây là các trường hợp kinh doanh hợp lệ --- một số khách hàng thực sự dành nhiều thời gian duyệt sản phẩm.
+    \item Các giá trị cao của PageValues thường tương ứng với khách hàng mua hàng --- loại bỏ sẽ mất thông tin quan trọng.
+    \item Các thuật toán như Decision Tree và Random Forest có khả năng xử lý outliers tốt.
+\end{enumerate}
+
+\textbf{RapidMiner}: Có thể sử dụng operator ``Detect Outlier (Distances)'' hoặc ``Filter Examples'' để phân tích và lọc outliers nếu cần.
+
+\subsection{Mã hóa biến phân loại (Categorical Encoding)}
+
+Các thuộc tính phân loại cần được chuyển đổi sang dạng số để sử dụng với một số thuật toán học máy.
+
+\textbf{Phương pháp mã hóa:}
+
+\begin{table}[H]
+\centering
+\caption{Phương pháp mã hóa biến phân loại}
+\label{tab:encoding_methods}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Thuộc tính} & \textbf{Phương pháp} & \textbf{Ghi chú} \\
+\hline
+Month & One-Hot Encoding & Tạo 10 biến nhị phân \\
+\hline
+VisitorType & One-Hot Encoding & Tạo 3 biến nhị phân \\
+\hline
+Weekend & Binary (0/1) & FALSE = 0, TRUE = 1 \\
+\hline
+OperatingSystems & Nominal to Numerical & Giữ nguyên giá trị số \\
+\hline
+Browser & Nominal to Numerical & Giữ nguyên giá trị số \\
+\hline
+Region & Nominal to Numerical & Giữ nguyên giá trị số \\
+\hline
+TrafficType & Nominal to Numerical & Giữ nguyên giá trị số \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{RapidMiner Operator}: ``Nominal to Numerical''
+\begin{itemize}
+    \item \textbf{coding type}: dummy coding (One-Hot Encoding)
+    \item \textbf{use comparison groups}: false
+\end{itemize}
+
+\subsection{Chuẩn hóa dữ liệu (Normalization)}
+
+Chuẩn hóa dữ liệu giúp đưa các thuộc tính về cùng một thang đo, đặc biệt quan trọng cho các thuật toán như KNN và Logistic Regression.
+
+\textbf{Phương pháp}: Z-score Normalization (Standardization)
+\begin{equation}
+z = \frac{x - \mu}{\sigma}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $x$: giá trị gốc
+    \item $\mu$: giá trị trung bình
+    \item $\sigma$: độ lệch chuẩn
+    \item $z$: giá trị sau chuẩn hóa
+\end{itemize}
+
+\textbf{RapidMiner Operator}: ``Normalize''
+\begin{itemize}
+    \item \textbf{method}: Z-transformation
+    \item \textbf{attribute filter type}: all (áp dụng cho tất cả thuộc tính số)
+\end{itemize}
+
+\subsection{Thiết lập vai trò thuộc tính (Set Role)}
+
+Trước khi huấn luyện mô hình, cần thiết lập vai trò cho các thuộc tính:
+
+\textbf{RapidMiner Operator}: ``Set Role''
+\begin{itemize}
+    \item \textbf{attribute name}: Revenue
+    \item \textbf{target role}: label
+\end{itemize}
+
+\subsection{Xử lý mất cân bằng lớp (Class Imbalance Handling)}
+
+Với tỷ lệ mất cân bằng 84.5\% : 15.5\%, nghiên cứu này so sánh hai phương pháp xử lý:
+
+\subsubsection{Phương pháp 1: SMOTE (Synthetic Minority Over-sampling Technique)}
+
+SMOTE \cite{smote} tạo ra các mẫu tổng hợp (synthetic samples) cho lớp thiểu số bằng cách nội suy giữa các mẫu hiện có và các láng giềng gần nhất.
+
+\textbf{RapidMiner Operator}: ``SMOTE Upsampling''
+\begin{itemize}
+    \item \textbf{number of neighbors}: 5
+    \item \textbf{normalize}: false (đã chuẩn hóa trước đó)
+    \item \textbf{equalize classes}: true
+\end{itemize}
+
+\textbf{Ưu điểm}:
+\begin{itemize}
+    \item Tạo mẫu mới thay vì sao chép, giảm overfitting.
+    \item Mở rộng không gian đặc trưng của lớp thiểu số.
+\end{itemize}
+
+\textbf{Nhược điểm}:
+\begin{itemize}
+    \item Có thể tạo mẫu nhiễu nếu dữ liệu có nhiều outliers.
+    \item Tốn thời gian tính toán hơn Oversampling đơn giản.
+\end{itemize}
+
+\subsubsection{Phương pháp 2: Random Oversampling}
+
+Random Oversampling sao chép ngẫu nhiên các mẫu từ lớp thiểu số để cân bằng số lượng với lớp đa số.
+
+\textbf{RapidMiner Operator}: ``Sample (Stratified)'' hoặc ``Multiply''
+\begin{itemize}
+    \item \textbf{sample}: balance ratio
+    \item \textbf{balance data}: true
+\end{itemize}
+
+\textbf{Ưu điểm}:
+\begin{itemize}
+    \item Đơn giản, nhanh chóng.
+    \item Không thay đổi đặc tính của dữ liệu gốc.
+\end{itemize}
+
+\textbf{Nhược điểm}:
+\begin{itemize}
+    \item Có thể gây overfitting do sao chép mẫu.
+    \item Không tạo thêm thông tin mới.
+\end{itemize}
+
+\subsection{Phân chia dữ liệu và Cross-Validation}
+
+Nghiên cứu sử dụng phương pháp \textbf{5-fold Stratified Cross-Validation} để đánh giá mô hình:
+
+\begin{enumerate}
+    \item Dữ liệu được chia thành 5 phần (folds) bằng nhau.
+    \item Tỷ lệ lớp được giữ nguyên trong mỗi fold (stratified).
+    \item Mỗi lần, 4 folds được dùng để huấn luyện và 1 fold để kiểm tra.
+    \item Quá trình lặp lại 5 lần, mỗi fold được dùng làm tập kiểm tra đúng 1 lần.
+    \item Kết quả cuối cùng là trung bình của 5 lần đánh giá.
+\end{enumerate}
+
+\textbf{RapidMiner Operator}: ``Cross Validation''
+\begin{itemize}
+    \item \textbf{number of folds}: 5
+    \item \textbf{sampling type}: stratified sampling
+    \item \textbf{use local random seed}: true
+    \item \textbf{local random seed}: 42 (để tái tạo kết quả)
+\end{itemize}
+
+\subsection{Tổng kết quy trình chuẩn bị dữ liệu}
+
+Hình \ref{fig:data_prep_workflow} thể hiện quy trình chuẩn bị dữ liệu trong RapidMiner.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình workflow từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{3cm}[Hình 6: Quy trình chuẩn bị dữ liệu trong RapidMiner]\vspace{3cm}}}
+\caption{Quy trình chuẩn bị dữ liệu (Data Preparation Workflow)}
+\label{fig:data_prep_workflow}
+\end{figure}
+
+\textbf{Thứ tự các bước}:
+\begin{enumerate}
+    \item Read CSV (Đọc dữ liệu)
+    \item Set Role (Thiết lập Revenue là label)
+    \item Nominal to Numerical (Mã hóa biến phân loại)
+    \item Normalize (Chuẩn hóa dữ liệu)
+    \item SMOTE Upsampling / Sample (Balance) (Xử lý mất cân bằng lớp)
+    \item Cross Validation (Huấn luyện và đánh giá mô hình)
+\end{enumerate}

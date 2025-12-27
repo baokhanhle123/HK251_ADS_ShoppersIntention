@@ -1,0 +1,495 @@
+\section{Mô hình hóa (Modeling)}
+
+Phần này trình bày các thuật toán học máy được sử dụng để dự đoán ý định mua hàng của khách truy cập. Bốn thuật toán được lựa chọn bao gồm: Decision Tree, Random Forest, K-Nearest Neighbors (KNN), và Logistic Regression.
+
+\subsection{Tổng quan các thuật toán (Algorithm Overview)}
+
+\begin{table}[H]
+\centering
+\caption{Tổng quan các thuật toán được sử dụng}
+\label{tab:algorithm_overview}
+\begin{tabular}{|p{3cm}|p{4cm}|p{5.5cm}|}
+\hline
+\textbf{Thuật toán} & \textbf{Loại} & \textbf{Đặc điểm chính} \\
+\hline
+Decision Tree & Cây quyết định & Dễ hiểu, giải thích được, xử lý tốt dữ liệu hỗn hợp \\
+\hline
+Random Forest & Ensemble (Bagging) & Giảm overfitting, độ chính xác cao, ổn định \\
+\hline
+KNN & Instance-based & Đơn giản, không tham số, nhạy với khoảng cách \\
+\hline
+Logistic Regression & Discriminative & Đầu ra xác suất, hệ số giải thích được \\
+\hline
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Decision Tree (Cây quyết định)}
+
+Decision Tree \cite{han2011} là thuật toán phân loại dựa trên cấu trúc cây, trong đó mỗi nút trong (internal node) đại diện cho một phép kiểm tra trên thuộc tính, mỗi nhánh đại diện cho kết quả của phép kiểm tra, và mỗi nút lá (leaf node) đại diện cho nhãn lớp.
+
+\textbf{Lý do lựa chọn}:
+\begin{itemize}
+    \item Dễ hiểu và giải thích --- có thể visualize cây quyết định để hiểu logic phân loại.
+    \item Xử lý tốt cả dữ liệu số và phân loại.
+    \item Không cần chuẩn hóa dữ liệu.
+    \item Có khả năng xử lý outliers và missing values.
+\end{itemize}
+
+\textbf{RapidMiner Operator}: ``Decision Tree''
+
+\textbf{Tham số (Parameters)}:
+\begin{table}[H]
+\centering
+\caption{Tham số Decision Tree trong RapidMiner}
+\label{tab:dt_params}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Tham số} & \textbf{Giá trị} & \textbf{Mô tả} \\
+\hline
+criterion & gain\_ratio & Tiêu chí phân chia: Gain Ratio (tỷ lệ tăng thông tin) \\
+\hline
+maximal\_depth & 10 & Độ sâu tối đa của cây \\
+\hline
+minimal\_size\_for\_split & 4 & Số mẫu tối thiểu để tiếp tục phân chia \\
+\hline
+minimal\_leaf\_size & 2 & Số mẫu tối thiểu tại mỗi nút lá \\
+\hline
+pruning & true & Áp dụng cắt tỉa để giảm overfitting \\
+\hline
+confidence & 0.25 & Mức độ tin cậy cho việc cắt tỉa \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình cây quyết định từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 7: Cây quyết định được huấn luyện (Decision Tree Visualization)]\vspace{4cm}}}
+\caption{Visualization của Decision Tree}
+\label{fig:decision_tree}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Random Forest (Rừng ngẫu nhiên)}
+
+Random Forest \cite{han2011} là thuật toán ensemble learning sử dụng kỹ thuật bagging để xây dựng nhiều cây quyết định và kết hợp dự đoán của chúng thông qua voting (đa số).
+
+\textbf{Lý do lựa chọn}:
+\begin{itemize}
+    \item Giảm overfitting so với một cây quyết định đơn lẻ.
+    \item Độ chính xác cao và ổn định.
+    \item Có thể đánh giá tầm quan trọng của các thuộc tính (feature importance).
+    \item Xử lý tốt bộ dữ liệu có nhiều thuộc tính.
+\end{itemize}
+
+\textbf{RapidMiner Operator}: ``Random Forest''
+
+\textbf{Tham số (Parameters)}:
+\begin{table}[H]
+\centering
+\caption{Tham số Random Forest trong RapidMiner}
+\label{tab:rf_params}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Tham số} & \textbf{Giá trị} & \textbf{Mô tả} \\
+\hline
+number\_of\_trees & 100 & Số lượng cây trong rừng \\
+\hline
+criterion & gain\_ratio & Tiêu chí phân chia tại mỗi nút \\
+\hline
+maximal\_depth & 10 & Độ sâu tối đa của mỗi cây \\
+\hline
+voting\_strategy & confidence\_vote & Chiến lược bầu chọn dựa trên độ tin cậy \\
+\hline
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{K-Nearest Neighbors - KNN (K láng giềng gần nhất)}
+
+KNN là thuật toán instance-based learning, phân loại mẫu mới dựa trên nhãn của k mẫu gần nhất trong tập huấn luyện.
+
+\textbf{Lý do lựa chọn}:
+\begin{itemize}
+    \item Đơn giản, dễ hiểu và triển khai.
+    \item Không có giả định về phân phối dữ liệu (non-parametric).
+    \item Hiệu quả với bộ dữ liệu có ranh giới quyết định phức tạp.
+\end{itemize}
+
+\textbf{RapidMiner Operator}: ``k-NN''
+
+\textbf{Tham số (Parameters)}:
+\begin{table}[H]
+\centering
+\caption{Tham số KNN trong RapidMiner}
+\label{tab:knn_params}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Tham số} & \textbf{Giá trị} & \textbf{Mô tả} \\
+\hline
+k & 5 & Số láng giềng gần nhất \\
+\hline
+weighted\_vote & true & Trọng số theo khoảng cách (gần hơn = trọng số cao hơn) \\
+\hline
+measure\_types & NumericalMeasures & Loại độ đo khoảng cách \\
+\hline
+numerical\_measure & EuclideanDistance & Độ đo khoảng cách Euclidean \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Lưu ý}: KNN nhạy cảm với thang đo của thuộc tính, do đó việc chuẩn hóa dữ liệu (Normalization) là bắt buộc trước khi áp dụng thuật toán này.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Logistic Regression (Hồi quy Logistic)}
+
+Logistic Regression là thuật toán phân loại tuyến tính, sử dụng hàm sigmoid để chuyển đổi đầu ra thành xác suất thuộc về một lớp.
+
+\textbf{Lý do lựa chọn}:
+\begin{itemize}
+    \item Đầu ra là xác suất, dễ diễn giải.
+    \item Hệ số (coefficients) cho biết tầm quan trọng và hướng ảnh hưởng của từng thuộc tính.
+    \item Hiệu quả tính toán, phù hợp cho dự đoán thời gian thực.
+    \item Ít bị overfitting với regularization.
+\end{itemize}
+
+\textbf{RapidMiner Operator}: ``Logistic Regression''
+
+\textbf{Tham số (Parameters)}:
+\begin{table}[H]
+\centering
+\caption{Tham số Logistic Regression trong RapidMiner}
+\label{tab:lr_params}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Tham số} & \textbf{Giá trị} & \textbf{Mô tả} \\
+\hline
+kernel\_type & dot & Kernel tuyến tính \\
+\hline
+C & 1.0 & Tham số regularization \\
+\hline
+use\_bias & true & Sử dụng bias term \\
+\hline
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Đánh giá mô hình (Model Evaluation)}
+
+\subsection{Các độ đo đánh giá (Evaluation Metrics)}
+
+Các độ đo sau được sử dụng để đánh giá và so sánh hiệu suất của các mô hình:
+
+\subsubsection{Confusion Matrix (Ma trận nhầm lẫn)}
+
+Ma trận nhầm lẫn cung cấp cái nhìn chi tiết về hiệu suất phân loại:
+
+\begin{table}[H]
+\centering
+\caption{Cấu trúc Confusion Matrix}
+\begin{tabular}{|c|c|c|}
+\hline
+& \textbf{Dự đoán: Positive} & \textbf{Dự đoán: Negative} \\
+\hline
+\textbf{Thực tế: Positive} & True Positive (TP) & False Negative (FN) \\
+\hline
+\textbf{Thực tế: Negative} & False Positive (FP) & True Negative (TN) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Các độ đo từ Confusion Matrix}
+
+\begin{itemize}
+    \item \textbf{Accuracy (Độ chính xác)}:
+    \begin{equation}
+    Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+    \end{equation}
+
+    \item \textbf{Precision (Độ chính xác dương)}:
+    \begin{equation}
+    Precision = \frac{TP}{TP + FP}
+    \end{equation}
+
+    \item \textbf{Recall / Sensitivity (Độ nhạy)}:
+    \begin{equation}
+    Recall = \frac{TP}{TP + FN}
+    \end{equation}
+
+    \item \textbf{F1-Score}:
+    \begin{equation}
+    F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall}
+    \end{equation}
+\end{itemize}
+
+\subsubsection{ROC-AUC}
+
+\begin{itemize}
+    \item \textbf{ROC Curve} (Receiver Operating Characteristic): Biểu đồ thể hiện tỷ lệ True Positive Rate (TPR) so với False Positive Rate (FPR) tại các ngưỡng phân loại khác nhau.
+    \item \textbf{AUC} (Area Under Curve): Diện tích dưới đường cong ROC, giá trị từ 0 đến 1. AUC = 1 là hoàn hảo, AUC = 0.5 tương đương phân loại ngẫu nhiên.
+\end{itemize}
+
+\textbf{RapidMiner}: Sử dụng operator ``Performance (Classification)'' và ``Create ROC'' để tính toán các độ đo.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Kết quả thực nghiệm - Dữ liệu gốc (Original Data Results)}
+
+Bảng \ref{tab:results_original} trình bày kết quả đánh giá các mô hình trên dữ liệu gốc (không xử lý mất cân bằng lớp) sử dụng 5-fold cross-validation.
+
+\begin{table}[H]
+\centering
+\caption{So sánh hiệu suất các mô hình trên dữ liệu gốc (5-fold CV)}
+\label{tab:results_original}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\hline
+Decision Tree & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Random Forest & [---] & [---] & [---] & [---] & [---] \\
+\hline
+KNN & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Logistic Regression & [---] & [---] & [---] & [---] & [---] \\
+\hline
+\end{tabular}
+
+\vspace{0.3cm}
+\small{Ghi chú: [---] = Điền kết quả từ RapidMiner}
+\end{table}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình confusion matrix từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 8: Ma trận nhầm lẫn cho từng mô hình (Dữ liệu gốc)]\vspace{4cm}}}
+\caption{Confusion Matrix - Dữ liệu gốc}
+\label{fig:cm_original}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình ROC curves từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 9: Đường cong ROC cho các mô hình (Dữ liệu gốc)]\vspace{4cm}}}
+\caption{ROC Curves - Dữ liệu gốc}
+\label{fig:roc_original}
+\end{figure}
+
+\textbf{Nhận xét dữ liệu gốc}:
+\begin{itemize}
+    \item Accuracy cao nhưng có thể gây hiểu nhầm do mất cân bằng lớp.
+    \item Recall của lớp TRUE (mua hàng) thường thấp vì mô hình thiên về dự đoán lớp đa số (FALSE).
+    \item F1-Score và ROC-AUC là các độ đo đáng tin cậy hơn trong trường hợp này.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Kết quả thực nghiệm - SMOTE (SMOTE Results)}
+
+Bảng \ref{tab:results_smote} trình bày kết quả đánh giá các mô hình sau khi áp dụng SMOTE để xử lý mất cân bằng lớp.
+
+\begin{table}[H]
+\centering
+\caption{So sánh hiệu suất các mô hình với SMOTE (5-fold CV)}
+\label{tab:results_smote}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\hline
+Decision Tree & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Random Forest & [---] & [---] & [---] & [---] & [---] \\
+\hline
+KNN & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Logistic Regression & [---] & [---] & [---] & [---] & [---] \\
+\hline
+\end{tabular}
+
+\vspace{0.3cm}
+\small{Ghi chú: [---] = Điền kết quả từ RapidMiner}
+\end{table}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình confusion matrix từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 10: Ma trận nhầm lẫn cho từng mô hình (SMOTE)]\vspace{4cm}}}
+\caption{Confusion Matrix - SMOTE}
+\label{fig:cm_smote}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình ROC curves từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 11: Đường cong ROC cho các mô hình (SMOTE)]\vspace{4cm}}}
+\caption{ROC Curves - SMOTE}
+\label{fig:roc_smote}
+\end{figure}
+
+\textbf{Nhận xét SMOTE}:
+\begin{itemize}
+    \item Recall của lớp TRUE (mua hàng) tăng đáng kể.
+    \item Precision có thể giảm nhẹ do tăng False Positive.
+    \item F1-Score thường cải thiện, cho thấy sự cân bằng tốt hơn giữa Precision và Recall.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Kết quả thực nghiệm - Oversampling (Oversampling Results)}
+
+Bảng \ref{tab:results_oversample} trình bày kết quả đánh giá các mô hình sau khi áp dụng Random Oversampling.
+
+\begin{table}[H]
+\centering
+\caption{So sánh hiệu suất các mô hình với Oversampling (5-fold CV)}
+\label{tab:results_oversample}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\hline
+Decision Tree & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Random Forest & [---] & [---] & [---] & [---] & [---] \\
+\hline
+KNN & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Logistic Regression & [---] & [---] & [---] & [---] & [---] \\
+\hline
+\end{tabular}
+
+\vspace{0.3cm}
+\small{Ghi chú: [---] = Điền kết quả từ RapidMiner}
+\end{table}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình confusion matrix từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 12: Ma trận nhầm lẫn cho từng mô hình (Oversampling)]\vspace{4cm}}}
+\caption{Confusion Matrix - Oversampling}
+\label{fig:cm_oversample}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn hình ROC curves từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 13: Đường cong ROC cho các mô hình (Oversampling)]\vspace{4cm}}}
+\caption{ROC Curves - Oversampling}
+\label{fig:roc_oversample}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{So sánh SMOTE vs Oversampling}
+
+Bảng \ref{tab:compare_imbalance} so sánh hiệu suất của mô hình tốt nhất giữa các phương pháp xử lý mất cân bằng lớp.
+
+\begin{table}[H]
+\centering
+\caption{So sánh hiệu suất giữa các phương pháp xử lý mất cân bằng lớp}
+\label{tab:compare_imbalance}
+\begin{tabular}{|l|l|c|c|c|c|c|}
+\hline
+\textbf{Phương pháp} & \textbf{Mô hình tốt nhất} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{AUC} \\
+\hline
+Dữ liệu gốc & [---] & [---] & [---] & [---] & [---] & [---] \\
+\hline
+SMOTE & [---] & [---] & [---] & [---] & [---] & [---] \\
+\hline
+Oversampling & [---] & [---] & [---] & [---] & [---] & [---] \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn biểu đồ so sánh từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 14: Biểu đồ so sánh F1-Score giữa các phương pháp xử lý mất cân bằng]\vspace{4cm}}}
+\caption{So sánh F1-Score giữa các phương pháp xử lý mất cân bằng lớp}
+\label{fig:compare_imbalance}
+\end{figure}
+
+\textbf{Nhận xét so sánh}:
+\begin{itemize}
+    \item SMOTE thường cho kết quả ổn định hơn vì tạo ra mẫu mới thay vì sao chép.
+    \item Oversampling có thể gây overfitting, đặc biệt với các thuật toán như KNN.
+    \item Cả hai phương pháp đều cải thiện đáng kể Recall so với dữ liệu gốc.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Phân tích tầm quan trọng thuộc tính (Feature Importance Analysis)}
+
+Phân tích tầm quan trọng thuộc tính giúp xác định các yếu tố ảnh hưởng mạnh nhất đến quyết định mua hàng của khách.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn biểu đồ feature importance từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 15: Biểu đồ tầm quan trọng thuộc tính (Feature Importance)]\vspace{4cm}}}
+\caption{Feature Importance từ Random Forest}
+\label{fig:feature_importance}
+\end{figure}
+
+\textbf{Top 5 thuộc tính quan trọng nhất} (dự kiến dựa trên phân tích tương quan):
+\begin{enumerate}
+    \item \textbf{PageValues}: Giá trị trang trung bình --- thuộc tính quan trọng nhất, phản ánh trực tiếp hành vi gần với việc mua hàng.
+    \item \textbf{ExitRates}: Tỷ lệ thoát trang --- khách có Exit Rate thấp có xu hướng mua hàng hơn.
+    \item \textbf{ProductRelated\_Duration}: Thời gian xem sản phẩm --- khách dành nhiều thời gian xem sản phẩm có khả năng mua cao hơn.
+    \item \textbf{BounceRates}: Tỷ lệ thoát --- tương tự Exit Rate, phản ánh mức độ engagement.
+    \item \textbf{Month}: Tháng trong năm --- phản ánh xu hướng mua sắm theo mùa.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Đường cong Lift và Gain (Lift and Gain Curves)}
+
+Lift và Gain curves đánh giá khả năng của mô hình trong việc xếp hạng khách hàng theo khả năng mua hàng.
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn Cumulative Gain curve từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 16: Đường cong Cumulative Gain]\vspace{4cm}}}
+\caption{Cumulative Gain Curve}
+\label{fig:gain_curve}
+\end{figure}
+
+\textbf{Diễn giải Gain Curve}:
+\begin{itemize}
+    \item Đường chéo (baseline) đại diện cho việc chọn ngẫu nhiên.
+    \item Đường cong càng cao so với baseline, mô hình càng hiệu quả.
+    \item Ví dụ: Nếu tại 40\% dữ liệu, đường cong đạt 80\%, nghĩa là chỉ cần tiếp cận 40\% khách hàng có điểm cao nhất, ta có thể bắt được 80\% khách mua hàng.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+% TODO: Chèn Lift curve từ RapidMiner
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}[Hình 17: Đường cong Lift]\vspace{4cm}}}
+\caption{Lift Curve}
+\label{fig:lift_curve}
+\end{figure}
+
+\textbf{Diễn giải Lift Curve}:
+\begin{itemize}
+    \item Lift = 1 tương đương chọn ngẫu nhiên.
+    \item Lift > 1 cho thấy mô hình tốt hơn chọn ngẫu nhiên.
+    \item Lift thường cao nhất ở các decile đầu tiên và giảm dần.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tổng kết đánh giá (Evaluation Summary)}
+
+\begin{table}[H]
+\centering
+\caption{Tổng kết kết quả và khuyến nghị mô hình}
+\label{tab:evaluation_summary}
+\begin{tabular}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Tiêu chí} & \textbf{Kết quả/Khuyến nghị} \\
+\hline
+Mô hình tốt nhất & [Điền sau khi có kết quả từ RapidMiner] \\
+\hline
+Phương pháp xử lý mất cân bằng tốt nhất & [SMOTE / Oversampling] \\
+\hline
+Độ đo đánh giá phù hợp nhất & F1-Score và ROC-AUC (do mất cân bằng lớp) \\
+\hline
+Thuộc tính quan trọng nhất & PageValues, ExitRates, ProductRelated\_Duration \\
+\hline
+Khuyến nghị triển khai & [Điền mô hình được khuyến nghị] \\
+\hline
+\end{tabular}
+\end{table}

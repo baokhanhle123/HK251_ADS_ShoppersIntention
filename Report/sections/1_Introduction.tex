@@ -1,0 +1,98 @@
+\section{Giới thiệu (Introduction)}
+
+\textit{``Khách hàng là ông chủ duy nhất. Họ có thể sa thải tất cả mọi người trong công ty, từ chủ tịch trở xuống, đơn giản chỉ bằng cách tiêu tiền của họ ở nơi khác.''}
+
+--- Sam Walton
+
+\subsection{Bối cảnh kinh doanh (Business Context)}
+
+ShopSmart E-commerce là một nền tảng thương mại điện tử hoạt động tại Việt Nam, phục vụ khách hàng trên toàn quốc với đa dạng sản phẩm từ thời trang, điện tử đến đồ gia dụng. Giống như mọi công ty thương mại điện tử khác, ShopSmart đối mặt với thách thức lớn về tỷ lệ chuyển đổi (conversion rate) thấp --- tức là tỷ lệ khách truy cập website thực sự hoàn thành giao dịch mua hàng.
+
+Trong năm 2023, ShopSmart ghi nhận hơn 12.000 phiên truy cập (sessions) mỗi tháng, nhưng chỉ khoảng 15\% trong số đó kết thúc bằng việc mua hàng. Điều này có nghĩa là 85\% khách truy cập rời khỏi website mà không thực hiện giao dịch --- một hiện tượng được gọi là ``bỏ giỏ hàng'' (shopping cart abandonment) hoặc ``thoát trang'' (website abandonment).
+
+Để giải quyết vấn đề này, bộ phận Marketing của ShopSmart đã triển khai các chiến dịch quảng cáo đại trà, gửi email khuyến mãi đến tất cả khách hàng và hiển thị popup giảm giá cho mọi người truy cập. Tuy nhiên, cách tiếp cận này không hiệu quả vì:
+
+\begin{itemize}
+    \item Chi phí marketing cao do gửi đến tất cả khách hàng, kể cả những người không có ý định mua.
+    \item Gây phiền nhiễu cho khách hàng không quan tâm, làm giảm trải nghiệm người dùng.
+    \item Tỷ lệ phản hồi (response rate) thấp, chỉ khoảng 2-3\%.
+    \item Không tận dụng được thông tin hành vi duyệt web của khách hàng.
+\end{itemize}
+
+Năm 2024, ShopSmart quyết định áp dụng phương pháp phân tích dữ liệu dự đoán (predictive data analytics) để giải quyết vấn đề này. Ý tưởng là xây dựng một mô hình học máy có thể dự đoán ý định mua hàng của khách truy cập dựa trên hành vi duyệt web của họ trong thời gian thực. Từ đó, hệ thống chỉ hiển thị các ưu đãi hoặc nội dung cá nhân hóa cho những khách hàng có khả năng mua hàng cao nhưng đang có xu hướng rời khỏi website.
+
+\subsection{Mô tả bài toán (Problem Statement)}
+
+Bài toán được đặt ra như sau: \textbf{Dự đoán liệu một phiên truy cập (session) của khách hàng trên website thương mại điện tử có kết thúc bằng giao dịch mua hàng hay không}, dựa trên các thông tin:
+
+\begin{enumerate}
+    \item \textbf{Dữ liệu clickstream}: Số lượng và thời gian truy cập các loại trang (trang quản trị, trang thông tin, trang sản phẩm).
+    \item \textbf{Chỉ số Google Analytics}: Bounce Rate (tỷ lệ thoát), Exit Rate (tỷ lệ thoát trang), Page Value (giá trị trang).
+    \item \textbf{Thông tin phiên}: Ngày đặc biệt, tháng, hệ điều hành, trình duyệt, khu vực, nguồn traffic, loại khách hàng, cuối tuần.
+\end{enumerate}
+
+Đây là bài toán \textbf{phân loại nhị phân (binary classification)} với:
+\begin{itemize}
+    \item \textbf{Biến mục tiêu (Target)}: Revenue --- nhận giá trị TRUE (có mua hàng) hoặc FALSE (không mua hàng).
+    \item \textbf{Biến đầu vào (Features)}: 17 thuộc tính mô tả hành vi và thông tin phiên truy cập.
+\end{itemize}
+
+Một thách thức quan trọng của bài toán này là \textbf{mất cân bằng lớp (class imbalance)}: chỉ có khoảng 15\% phiên truy cập kết thúc bằng giao dịch mua hàng, trong khi 85\% còn lại không mua. Điều này đòi hỏi các kỹ thuật xử lý đặc biệt như SMOTE hoặc Oversampling.
+
+\subsection{Mục tiêu nghiên cứu (Research Objectives)}
+
+Nghiên cứu này nhằm đạt được các mục tiêu sau:
+
+\textbf{Mục tiêu chính:}
+\begin{enumerate}
+    \item Xây dựng và so sánh các mô hình học máy để dự đoán ý định mua hàng của khách truy cập website thương mại điện tử.
+    \item Đánh giá hiệu quả của các kỹ thuật xử lý mất cân bằng lớp (SMOTE và Oversampling) đối với hiệu suất mô hình.
+\end{enumerate}
+
+\textbf{Mục tiêu phụ:}
+\begin{enumerate}
+    \item Thực hiện phân tích khám phá dữ liệu (EDA) và xây dựng báo cáo chất lượng dữ liệu.
+    \item Xác định các thuộc tính quan trọng nhất ảnh hưởng đến quyết định mua hàng.
+    \item Đưa ra các đề xuất kinh doanh dựa trên kết quả phân tích.
+\end{enumerate}
+
+\subsection{Phạm vi nghiên cứu (Scope)}
+
+\textbf{Dữ liệu:}
+\begin{itemize}
+    \item Bộ dữ liệu ``Online Shoppers Purchasing Intention Dataset'' từ UCI Machine Learning Repository \cite{uci_dataset}.
+    \item Được thu thập từ một website thương mại điện tử trong khoảng thời gian 1 năm.
+    \item Bao gồm 12.330 phiên truy cập, mỗi phiên thuộc về một người dùng khác nhau.
+\end{itemize}
+
+\textbf{Công cụ:}
+\begin{itemize}
+    \item RapidMiner Studio --- nền tảng khoa học dữ liệu và học máy \cite{rapidminer}.
+\end{itemize}
+
+\textbf{Thuật toán được sử dụng:}
+\begin{itemize}
+    \item Decision Tree (Cây quyết định)
+    \item Random Forest (Rừng ngẫu nhiên)
+    \item K-Nearest Neighbors - KNN (K láng giềng gần nhất)
+    \item Logistic Regression (Hồi quy Logistic)
+\end{itemize}
+
+\textbf{Phương pháp đánh giá:}
+\begin{itemize}
+    \item 5-fold Cross-Validation (Kiểm chứng chéo 5 lần)
+    \item Các độ đo: Accuracy, Precision, Recall, F1-Score, ROC-AUC
+    \item Confusion Matrix, ROC Curve, Lift Curve
+\end{itemize}
+
+\subsection{Cấu trúc báo cáo (Report Structure)}
+
+Báo cáo này được tổ chức theo quy trình CRISP-DM (Cross-Industry Standard Process for Data Mining) \cite{crisp_dm} với các phần sau:
+
+\begin{itemize}
+    \item \textbf{Phần 1 - Giới thiệu}: Bối cảnh kinh doanh, mô tả bài toán và mục tiêu nghiên cứu.
+    \item \textbf{Phần 2 - Tìm hiểu và Chuẩn bị dữ liệu}: Mô tả bộ dữ liệu, báo cáo chất lượng dữ liệu, phân tích khám phá và tiền xử lý dữ liệu.
+    \item \textbf{Phần 3 - Mô hình hóa và Đánh giá}: Xây dựng các mô hình học máy, đánh giá và so sánh hiệu suất.
+    \item \textbf{Phần 4 - Thảo luận}: Diễn dịch kết quả, hàm ý kinh doanh và đề xuất.
+    \item \textbf{Phần 5 - Kết luận}: Tóm tắt kết quả và hướng phát triển.
+\end{itemize}

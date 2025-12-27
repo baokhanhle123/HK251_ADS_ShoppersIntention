@@ -1,0 +1,92 @@
+\ProvidesPackage{function}
+
+% Begining of each topic
+\newcommand{\topic}[1]{\vspace{1mm}\noindent\textbf{#1.}}
+
+% Draw multiple bar plot
+\newcommand{\barplot}[9]{
+    \begin{adjustbox}{width=#8\columnwidth}
+        \begin{tikzpicture}
+            \pgfplotstableread[col sep=comma]{#1}\lockdata
+            \ifnum#9=1
+                \begin{axis}[
+                    ybar,
+                    symbolic x coords={#2},
+                    bar width=5 pt,
+                    xtick=data,
+                    xlabel=#3, 
+                    ylabel=#4, 
+                    enlargelimits=true,
+                    nodes near coords,
+                    every node near coord/.append style={font=\scriptsize, rotate=90, yshift=-6pt, xshift=20pt},
+                    legend style={at={#7}, 
+                                      anchor=south west,
+                                      fill=none,
+                                      draw=black},
+                    ]
+                    \foreach \x in {#6} {
+                        \addplot table[x=#5, y=\x]{\lockdata};
+                    }
+                    \legend{#6}
+                \end{axis}
+            \else
+                \begin{axis}[
+                    ybar,
+                    symbolic x coords={#2},
+                    bar width=5pt,
+                    xtick=data,
+                    xlabel=#3, 
+                    ylabel=#4, 
+                    enlargelimits=true,
+                    legend style={at={#7}, 
+                                      anchor=south west,
+                                      fill=none,
+                                      draw=black},
+                    ]
+                    \foreach \x in {#6} {
+                        \addplot table[x=#5, y=\x]{\lockdata};
+                    }
+                    \legend{#6}
+                \end{axis} 
+            \fi
+        \end{tikzpicture}
+    \end{adjustbox}
+}
+
+
+
+% Draw single bar plot
+\newcommand{\singlebarplot}[9]{
+    \begin{adjustbox}{width=#7\columnwidth}
+        \begin{tikzpicture}
+            \pgfplotstableread[col sep=comma]{#1}\lockdata
+            \ifnum#8=1
+                \begin{axis}[
+                    ybar,
+                    symbolic x coords={#2},
+                    bar width=#9,
+                    xtick=data,
+                    xlabel=#3, 
+                    ylabel=#4, 
+                    enlargelimits=true,
+                    nodes near coords,
+                    every node near coord/.append style={font=\small, rotate=0}
+                    ]
+                    \addplot table[x=#5, y=#6]{\lockdata};
+                \end{axis}
+            \else
+                \begin{axis}[
+                    ybar,
+                    symbolic x coords={#2},
+                    bar width=#9,
+                    xtick=data,
+                    xlabel=#3, 
+                    ylabel=#4, 
+                    enlargelimits=true
+                    ]
+                    \addplot table[x=#5, y=#6]{\lockdata};
+                \end{axis} 
+            \fi
+        \end{tikzpicture}
+    \end{adjustbox}
+}

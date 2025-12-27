@@ -1,0 +1,16 @@
+\begin{table}[!ht]
+\centering
+\caption{The configuration of hardware and software of two machines for evaluation.}
+\label{tab:config}
+\begin{adjustbox}{width=\columnwidth,center}
+\begin{tabular}{c;{1pt/1pt}l;{1pt/1pt}l;{1pt/1pt}l} 
+\hline
+\rowcolor[rgb]{0.784,0.784,0.784} \multicolumn{1}{c|}{\textbf{Machine}} & \multicolumn{1}{c|}{\textbf{Hardware}}                                                                                                     & \multicolumn{1}{c|}{\textbf{Software}}                       & \multicolumn{1}{c}{\textbf{Evaluation}}        \\ 
+\hline\hline
+iST PC                                                                  & \begin{tabular}[c]{@{}l@{}}Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz.\\8 cores and 8 threads.\\32 GB RAM 2666 MHz\end{tabular}               & \begin{tabular}[c]{@{}l@{}}C++20\\OpenMPI 4.1.1\end{tabular} & Coarse-grained Queue, Fine-grained Queue, Lock-free Queue  \\ 
+\hdashline[1pt/1pt]
+ASUS Zenbook                                                                & \begin{tabular}[c]{@{}l@{}}Intel(R) Core(TM) Ultra 7 155H @ 3.8GHz\\11 cores and 22 threads.\\\textcolor[rgb]{0.031,0.031,0.035}{32GB RAM 7467MHz}\end{tabular} & C++20                                                        &  Coarse-grained Queue, Fine-grained Queue, Lock-free Queue~                        \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{table}

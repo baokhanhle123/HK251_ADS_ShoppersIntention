@@ -1,0 +1,101 @@
+\clearpage
+\section{Kết luận (Conclusion)}
+\label{Sec:conclusion}
+
+\subsection{Tóm tắt nghiên cứu (Summary)}
+
+Nghiên cứu này đã thực hiện một quy trình phân tích dữ liệu hoàn chỉnh theo phương pháp CRISP-DM để giải quyết bài toán dự đoán ý định mua hàng của khách truy cập website thương mại điện tử. Các kết quả chính bao gồm:
+
+\textbf{1. Tìm hiểu và chuẩn bị dữ liệu:}
+\begin{itemize}
+    \item Phân tích bộ dữ liệu Online Shoppers Purchasing Intention gồm 12.330 phiên truy cập với 17 thuộc tính đầu vào.
+    \item Xác định vấn đề mất cân bằng lớp nghiêm trọng (84.5\% không mua vs 15.5\% có mua).
+    \item Thực hiện tiền xử lý dữ liệu: xử lý bản ghi trùng lặp, mã hóa biến phân loại, chuẩn hóa dữ liệu.
+    \item Áp dụng hai kỹ thuật xử lý mất cân bằng: SMOTE và Random Oversampling.
+\end{itemize}
+
+\textbf{2. Mô hình hóa và đánh giá:}
+\begin{itemize}
+    \item Xây dựng và huấn luyện 4 thuật toán học máy: Decision Tree, Random Forest, K-Nearest Neighbors, và Logistic Regression.
+    \item Sử dụng 5-fold Stratified Cross-Validation để đảm bảo độ tin cậy của kết quả.
+    \item So sánh hiệu suất mô hình qua các độ đo: Accuracy, Precision, Recall, F1-Score, và ROC-AUC.
+    \item Random Forest đạt hiệu suất tốt nhất tổng thể, cân bằng giữa khả năng dự đoán và độ ổn định.
+\end{itemize}
+
+\textbf{3. Phát hiện chính:}
+\begin{itemize}
+    \item PageValues là thuộc tính dự đoán quan trọng nhất, phản ánh giá trị các trang được khách hàng truy cập.
+    \item ExitRates và BounceRates là các chỉ báo tiêu cực mạnh về khả năng mua hàng.
+    \item ProductRelated\_Duration cho thấy mối tương quan tích cực với quyết định mua.
+    \item SMOTE cung cấp sự cân bằng tốt hơn giữa Precision và Recall so với Random Oversampling.
+\end{itemize}
+
+\subsection{Đóng góp chính (Key Contributions)}
+
+Nghiên cứu này mang lại các đóng góp sau cho lĩnh vực phân tích dữ liệu ứng dụng:
+
+\begin{enumerate}
+    \item \textbf{Quy trình phân tích hoàn chỉnh}: Cung cấp một quy trình end-to-end từ tìm hiểu dữ liệu, tiền xử lý, mô hình hóa đến đánh giá, có thể áp dụng cho các bài toán phân loại tương tự.
+
+    \item \textbf{So sánh hệ thống các kỹ thuật xử lý mất cân bằng}: Đánh giá chi tiết ảnh hưởng của SMOTE và Oversampling lên hiệu suất của 4 thuật toán học máy khác nhau.
+
+    \item \textbf{Insights có giá trị kinh doanh}: Xác định các thuộc tính quan trọng nhất ảnh hưởng đến quyết định mua hàng, giúp doanh nghiệp thương mại điện tử tập trung nguồn lực vào những yếu tố có tác động lớn nhất.
+
+    \item \textbf{Đề xuất triển khai thực tế}: Cung cấp lộ trình triển khai hệ thống dự đoán thời gian thực và các chiến lược marketing dựa trên dữ liệu.
+
+    \item \textbf{Hướng dẫn sử dụng RapidMiner}: Tài liệu hóa chi tiết các operator và tham số RapidMiner được sử dụng, có thể làm tài liệu tham khảo cho các dự án tương tự.
+\end{enumerate}
+
+\subsection{Hướng phát triển trong tương lai (Future Work)}
+
+Để cải thiện và mở rộng nghiên cứu này, các hướng phát triển sau được đề xuất:
+
+\subsubsection{Cải thiện mô hình}
+
+\begin{itemize}
+    \item \textbf{Thuật toán nâng cao}: Thử nghiệm các phương pháp ensemble tiên tiến như XGBoost, LightGBM, CatBoost, và các mô hình deep learning như Neural Networks, LSTM.
+
+    \item \textbf{Feature Engineering}: Tạo các thuộc tính mới từ tương tác giữa các thuộc tính hiện có, sử dụng các kỹ thuật như polynomial features, interaction terms.
+
+    \item \textbf{Hyperparameter Optimization}: Sử dụng các kỹ thuật tối ưu hóa tự động như Grid Search, Random Search, hoặc Bayesian Optimization để tìm bộ tham số tối ưu.
+
+    \item \textbf{Ensemble Methods}: Kết hợp nhiều mô hình (model stacking, blending) để cải thiện hiệu suất dự đoán.
+\end{itemize}
+
+\subsubsection{Mở rộng dữ liệu}
+
+\begin{itemize}
+    \item \textbf{Thu thập dữ liệu Việt Nam}: Xây dựng bộ dữ liệu từ các website thương mại điện tử Việt Nam để phản ánh chính xác hơn hành vi khách hàng trong nước.
+
+    \item \textbf{User-level tracking}: Theo dõi hành vi khách hàng qua nhiều phiên truy cập để hiểu rõ hơn customer journey.
+
+    \item \textbf{Bổ sung thông tin sản phẩm}: Thu thập dữ liệu về danh mục sản phẩm, giá cả, đánh giá để xây dựng mô hình gợi ý sản phẩm.
+
+    \item \textbf{Dữ liệu nhân khẩu học}: Kết hợp thông tin độ tuổi, giới tính, vị trí địa lý để cá nhân hóa dự đoán.
+\end{itemize}
+
+\subsubsection{Triển khai thực tế}
+
+\begin{itemize}
+    \item \textbf{Hệ thống thời gian thực}: Xây dựng pipeline dự đoán real-time tích hợp với website thương mại điện tử.
+
+    \item \textbf{A/B Testing Framework}: Thiết lập framework để kiểm chứng hiệu quả của các intervention dựa trên dự đoán mô hình.
+
+    \item \textbf{Dashboard phân tích}: Xây dựng dashboard để theo dõi hiệu suất mô hình và các KPI kinh doanh.
+
+    \item \textbf{Tích hợp CRM}: Kết nối với hệ thống quản lý khách hàng để tự động hóa các chiến dịch marketing.
+\end{itemize}
+
+\subsection{Lời kết}
+
+Nghiên cứu này đã chứng minh tiềm năng của việc áp dụng học máy trong lĩnh vực thương mại điện tử để dự đoán ý định mua hàng của khách hàng. Với tỷ lệ chuyển đổi hiện tại chỉ khoảng 15\%, việc xác định chính xác những khách hàng có khả năng mua hàng cao sẽ giúp doanh nghiệp tối ưu hóa chi phí marketing, cải thiện trải nghiệm người dùng, và cuối cùng là tăng doanh thu.
+
+Mặc dù còn những hạn chế cần khắc phục, các kết quả từ nghiên cứu này cung cấp nền tảng vững chắc cho việc triển khai hệ thống dự đoán ý định mua hàng trong thực tế. Sự kết hợp giữa khoa học dữ liệu và hiểu biết kinh doanh sẽ là chìa khóa để thành công trong môi trường thương mại điện tử cạnh tranh ngày nay.
+
+\vspace{1cm}
+\begin{center}
+\textit{``Dữ liệu là dầu mỏ mới. Nhưng giống như dầu mỏ, nó chỉ có giá trị khi được tinh chế và sử dụng đúng cách.''}
+
+--- Clive Humby
+\end{center}
+

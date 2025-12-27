@@ -1,0 +1,4 @@
+Machine,Counter,nodes,counters
+iST-PC,MPI_Fetch_and_op,1,19.3029
+iST-PC,MPI_Fetch_and_op,2,2.97163
+iST-PC,MPI_Fetch_and_op,4,1.09985

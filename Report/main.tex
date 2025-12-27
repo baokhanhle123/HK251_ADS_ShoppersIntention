@@ -1,0 +1,215 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[a4paper, left =2.7cm, right=2.7cm, top=3.7cm, bottom=3.5cm, headheight=8mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage[ruled,vlined,boxed]{algorithm2e}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{array}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+\usepackage{adjustbox}
+\usepackage{pgfplots}
+\usepackage{longtable}
+
+% custom command
+\usepackage{function}
+
+\justifying
+
+\SetKwRepeat{Do}{do}{while}
+\SetKwRepeat{Struct}{struct: }{as }
+\makeatletter
+\newcommand\Func[3]{%
+    \textbf{function} #1 (#2):%
+    \algocf@group{#3}%
+    \textbf{end}%
+}
+\renewcommand{\Indentp}[1]{%
+  \advance\leftskip by #1
+  \advance\skiptext by -#1
+  \advance\skiprule by #1}%
+\renewcommand{\Indp}{\algocf@adjustskipindent\Indentp{\algoskipindent}}
+\renewcommand{\Indpp}{\Indentp{0.5em}}%
+\renewcommand{\Indm}{\algocf@adjustskipindent\Indentp{-\algoskipindent}}
+\renewcommand{\Indmm}{\Indentp{-0.5em}}%
+\makeatother
+
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
+
+\pagestyle{fancy}
+
+\usepackage{multirow}
+\usepackage{makecell}
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{colortbl}
+\usepackage{arydshln}
+\usepackage{multirow}
+\usepackage{pifont}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% Style Code %
+\setlength{\parskip}{5pt}
+
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+		\put(0,-8){\includegraphics[width=10mm, height=9mm]{images/hcmut.png}}
+		\end{picture}&
+		\begin{tabular}{l}
+            Ho Chi Minh City University of Technology \\
+            Vietnam National University, Ho Chi Minh City
+		\end{tabular}
+	\end{tabular}
+}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{Applied Data Science}
+
+\usepackage{tikz}
+\usepackage{indentfirst}
+\begin{document}
+	\begin{titlepage}
+
+		\begin{center}
+		    HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY \\ VIETNAM NATIONAL UNIVERSITY, HO CHI MINH CITY
+		\end{center}
+
+		\vspace{0.5cm}
+
+		\begin{figure}[h!]
+			\begin{center}
+				\includegraphics[width=6cm]{images/hcmut.png}
+			\end{center}
+		\end{figure}
+
+		\begin{center}
+			\begin{tabular}{c}
+				\multicolumn{1}{c}{\textbf{{\Large APPLIED DATA SCIENCE}}}\\
+				~~\\
+				\hline
+				\\
+				\multicolumn{1}{l}{\textbf{{\large Bài tập nhóm (Group Project):}}}\\
+				\\
+                \textbf{{\Large \bf DỰ ĐOÁN Ý ĐỊNH MUA HÀNG}} \\
+                \textbf{{\Large \bf CỦA KHÁCH HÀNG TRỰC TUYẾN}} \\
+                ~~\\
+                \textbf{{\large Online Shoppers Purchasing Intention Prediction}} \\
+				\\
+				\hline
+			\end{tabular}
+		\end{center}
+
+            \begin{table}[h]
+    			\begin{tabular}{rll}
+                    \hspace{5cm} \textbf{Giảng viên hướng dẫn:} & [Tên Giảng viên] & \\[0.2cm]
+    			\end{tabular}
+		  \end{table}
+
+            \vspace{1cm}
+
+            \begin{table}[h]
+                \centering
+                \begin{tabular}{rll}
+                    \textbf{Sinh viên thực hiện:} & [Họ tên SV 1] & [MSSV 1] \\[0.2cm]
+                    & [Họ tên SV 2] & [MSSV 2] \\[0.2cm]
+                    & [Họ tên SV 3] & [MSSV 3] \\[0.2cm]
+                \end{tabular}
+          \end{table}
+
+		\begin{center}
+		    \vspace{2.5cm}
+			{\footnotesize TP. Hồ Chí Minh, Tháng 12/2025}
+		\end{center}
+
+	\end{titlepage}
+
+    \clearpage
+    \tableofcontents
+    \clearpage
+    \listoffigures
+    \clearpage
+    \listoftables
+
+    % ------------ SECTIONS ------------
+    \clearpage
+    \input{sections/1_Introduction}
+    \input{sections/2_Methods}
+    \input{sections/3_Experiments}
+    \input{sections/4_Improvement}
+    \input{sections/5_Conclusion}
+
+    \clearpage
+    \begin{thebibliography}{9}
+
+    \bibitem{sakar2018}
+    Sakar, C.O., Polat, S.O., Katircioglu, M., and Kastro, Y. (2018). Real-time prediction of online shoppers' purchasing intention using multilayer perceptron and LSTM recurrent neural networks. \textit{Neural Computing and Applications}, 31(10), pp.6893-6908.
+
+    \bibitem{uci_dataset}
+    UCI Machine Learning Repository. Online Shoppers Purchasing Intention Dataset. \url{https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset}, [Truy cập 12/2025].
+
+    \bibitem{rapidminer}
+    RapidMiner Studio. \url{https://rapidminer.com/}, [Truy cập 12/2025].
+
+    \bibitem{crisp_dm}
+    Chapman, P., Clinton, J., Kerber, R., Khabaza, T., Reinartz, T., Shearer, C., and Wirth, R. (2000). CRISP-DM 1.0: Step-by-step data mining guide. \textit{SPSS Inc.}
+
+    \bibitem{smote}
+    Chawla, N.V., Bowyer, K.W., Hall, L.O., and Kegelmeyer, W.P. (2002). SMOTE: Synthetic Minority Over-sampling Technique. \textit{Journal of Artificial Intelligence Research}, 16, pp.321-357.
+
+    \bibitem{han2011}
+    Han, J., Kamber, M., and Pei, J. (2011). \textit{Data Mining: Concepts and Techniques}. 3rd Edition. Morgan Kaufmann.
+
+    \bibitem{google_analytics}
+    Google Analytics Help. Bounce rate, Exit rate, and Page value metrics. \url{https://support.google.com/analytics}, [Truy cập 12/2025].
+
+    \end{thebibliography}
+
+\end{document}

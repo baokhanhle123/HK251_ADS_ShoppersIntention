@@ -1,0 +1,22 @@
+\begin{table}[!t]
+\centering
+\caption{The performance comparison of each algorithm implemented for share-memory and distributed environment.}
+\label{tab:mpi_comparison}
+\begin{adjustbox}{width=0.8\columnwidth,center}
+\begin{tabular}{c|c|c|c|c} 
+\hline
+\rowcolor[rgb]{0.784,0.784,0.784} \textbf{Algorithm} & \textbf{No. Threads / Nodes} & \textbf{Multithread} & \textbf{Multinode} & \textbf{$\Delta$(\%)}  \\ 
+\hline\hline
+TAS                                                  & 4                            & 142.729              & 32397.7            & 22598.800              \\ 
+\hdashline[1pt/1pt]
+TTAS                                                 & 4                            & 142.62               & 318.837            & 123.557                \\ 
+\hdashline[1pt/1pt]
+MCS                                                  & 4                            & 173.612              & 108958             & 62659.487              \\ 
+\hline\hline
+SR-Barrier                                           & 4                            & 208.987              & 0.000391           & 99.999                 \\ 
+\hline\hline
+CAS-Counter                                          & 4                            & 864.463              & 1.09985            & 99.873                 \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{table}

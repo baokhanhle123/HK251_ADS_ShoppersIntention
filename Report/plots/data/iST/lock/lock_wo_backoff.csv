@@ -1,0 +1,5 @@
+Machine,Implement-er,w-w/o backoff,threads,iters,Total task,OW,TAS,TTAS,MCS
+iST-PC,C++,w/o,2,100,200,0,70.9994,70.7128,70.9931
+iST-PC,C++,w/o,4,100,400,0,143.178,142.939,143.827
+iST-PC,C++,w/o,6,100,600,0,214.791,214.411,214.714
+iST-PC,C++,w/o,8,100,800,0,287.156,289.837,245.231
