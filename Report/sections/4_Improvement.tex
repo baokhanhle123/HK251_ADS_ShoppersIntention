@@ -2,7 +2,9 @@
 \section{Thảo luận và Đề xuất (Discussion and Recommendations)}
 \label{Sec:improvement}
 
-Sau khi hoàn thành việc xây dựng và đánh giá các mô hình dự đoán, phần này sẽ phân tích sâu hơn về ý nghĩa của kết quả, đưa ra các đề xuất kinh doanh cụ thể cho ShopSmart E-commerce, và thảo luận về những hạn chế của nghiên cứu.
+Sau khi hoàn thành việc xây dựng và đánh giá các mô hình dự đoán ý định mua hàng, phần này diễn dịch sâu hơn
+ý nghĩa của kết quả, chuyển hóa chúng thành các hàm ý kinh doanh cụ thể cho ShopSmart E-commerce, đồng thời
+thảo luận hạn chế và các hướng cải tiến để mô hình có thể triển khai thực tế một cách đáng tin cậy.
 
 %=================================================================================
 \subsection{Diễn dịch kết quả (Result Interpretation)}
@@ -10,231 +12,246 @@ Sau khi hoàn thành việc xây dựng và đánh giá các mô hình dự đo�
 
 \subsubsection{Phân tích hiệu suất mô hình}
 
-Dựa trên kết quả thực nghiệm, chúng ta có thể rút ra những nhận định quan trọng sau:
+Kết quả so sánh mô hình (Bảng~\ref{tab:model_metrics}) cho thấy nhóm \textbf{ensemble dựa trên decision tree}
+(Gradient Boosting, XGBoost, Random Forest) đạt hiệu quả tổng thể tốt nhất. Nhận xét này phù hợp với trực quan hóa
+tại Hình~\ref{fig:fig1_f1_auc}, khi các mô hình này cùng lúc có \textbf{F1} và \textbf{ROC-AUC} cao hơn rõ rệt so với
+các mô hình tuyến tính hoặc dựa trên khoảng cách (KNN). Điều này hàm ý dữ liệu hành vi có nhiều \textit{quan hệ phi tuyến}
+và \textit{tương tác thuộc tính}.
 
-\textbf{1. Random Forest là mô hình hiệu quả nhất}
+\begin{table}[H]
+\centering
+\caption{Kết quả đánh giá các mô hình trên tập kiểm thử (test set).}
+\label{tab:model_metrics}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\midrule
+Gradient Boosting      & 0.901865 & 0.725806 & 0.589005 & 0.650289 & 0.927936 \\
+XGBoost                & 0.892133 & 0.682390 & 0.568063 & 0.620000 & 0.919550 \\
+Random Forest          & 0.897405 & 0.729537 & 0.536649 & 0.618401 & 0.917758 \\
+Decision Tree          & 0.863747 & 0.561828 & 0.547120 & 0.554377 & 0.734453 \\
+Support Vector Machine & 0.884428 & 0.701245 & 0.442408 & 0.542536 & 0.873646 \\
+Logistic Regression    & 0.881184 & 0.743169 & 0.356021 & 0.481416 & 0.887273 \\
+K-Nearest Neighbors    & 0.868613 & 0.636792 & 0.353403 & 0.454545 & 0.772459 \\
+Naive Bayes            & 0.676399 & 0.297665 & 0.801047 & 0.434043 & 0.797426 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Random Forest đạt hiệu suất cao nhất trong hầu hết các cấu hình thử nghiệm. Điều này có thể giải thích bởi:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/visualizations_20251230_135903/fig1_f1_auc.png}
+  \caption{So sánh F1-Score và ROC-AUC giữa các mô hình.}
+  \label{fig:fig1_f1_auc}
+\end{figure}
+
+\textbf{1. Gradient Boosting là mô hình tốt nhất theo tiêu chí F1-Score và ROC-AUC.}
+Trong thí nghiệm hiện tại, Gradient Boosting đạt \textbf{F1-Score cao nhất} và \textbf{ROC-AUC cao nhất} (Bảng~\ref{tab:model_metrics}),
+cho thấy mô hình không chỉ phân loại tốt tại ngưỡng mặc định mà còn có khả năng \textit{ranking} xác suất Purchase tốt.
+Về mặt triển khai, đây là lợi thế quan trọng vì doanh nghiệp có thể chọn \textbf{threshold} linh hoạt theo mục tiêu
+(ví dụ: ưu tiên bắt nhiều Purchase hay ưu tiên giảm báo động giả).
+
+\textbf{2. Random Forest là lựa chọn cạnh tranh khi ưu tiên tính ổn định và diễn giải.}
+Random Forest có hiệu năng xấp xỉ nhóm dẫn đầu (đặc biệt về Accuracy/Precision và ROC-AUC), đồng thời thuận lợi khi cần
+giải thích theo hướng \textit{feature importance} và kiểm soát rủi ro mô hình. Trong bối cảnh doanh nghiệp yêu cầu
+\textit{interpretability} cao (ví dụ: cần giải thích cho đội marketing hoặc quản trị rủi ro), Random Forest là một lựa chọn thực dụng.
+
+\textbf{3. Trade-off giữa Precision và Recall thể hiện rõ qua không gian Precision--Recall.}
+Hình~\ref{fig:fig2_precision_recall} cho thấy các mô hình có “thiên hướng” khác nhau:
 \begin{itemize}
-    \item Khả năng xử lý cả thuộc tính số và phân loại một cách hiệu quả.
-    \item Cơ chế ensemble giúp giảm overfitting so với Decision Tree đơn lẻ.
-    \item Khả năng nắm bắt các mối quan hệ phi tuyến tính trong dữ liệu clickstream.
-    \item Robust với nhiễu và outliers trong dữ liệu.
+  \item \textbf{Naive Bayes} có Recall rất cao nhưng Precision thấp, phù hợp khi hành động can thiệp rẻ và mục tiêu là \textit{tối đa hóa phát hiện Purchase} (chấp nhận nhiều FP).
+  \item \textbf{Logistic Regression} có Precision cao nhưng Recall thấp, phù hợp khi FP có chi phí lớn (ví dụ tặng voucher/ưu đãi tốn kém), nhưng có nguy cơ bỏ sót nhiều entries Purchase.
+  \item \textbf{Gradient Boosting} đạt cân bằng tốt nhất giữa Precision và Recall trong nhóm hiệu năng cao, nên là lựa chọn hợp lý nếu mục tiêu tối ưu \textbf{F1}.
 \end{itemize}
 
-\textbf{2. Ảnh hưởng của việc xử lý mất cân bằng lớp}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/visualizations_20251230_135903/fig2_precision_recall.png}
+  \caption{Không gian Precision--Recall của các mô hình.}
+  \label{fig:fig2_precision_recall}
+\end{figure}
 
-Kết quả cho thấy sự cải thiện đáng kể về Recall khi áp dụng các kỹ thuật xử lý mất cân bằng lớp:
+\textbf{4. Diễn giải lỗi dự đoán thông qua Confusion Matrix.}
+Với mô hình tốt nhất, Hình~\ref{fig:fig3_confusion_matrix_gb} cho thấy:
 \begin{itemize}
-    \item \textbf{Dữ liệu gốc}: Mô hình có xu hướng dự đoán lớp đa số (không mua hàng), dẫn đến Recall thấp cho lớp mua hàng.
-    \item \textbf{SMOTE}: Cải thiện Recall đáng kể bằng cách tạo ra các mẫu tổng hợp, giúp mô hình học được đặc điểm của khách hàng mua hàng tốt hơn.
-    \item \textbf{Oversampling}: Cũng cải thiện Recall nhưng có nguy cơ overfitting cao hơn do sao chép các mẫu thiểu số.
+  \item \textbf{FP} tương đối thấp (tỷ lệ báo động giả nhỏ), giúp hạn chế chi phí nếu dự đoán Purchase kéo theo ưu đãi.
+  \item \textbf{FN} vẫn đáng kể, nghĩa là vẫn còn một phần entries mua thật bị bỏ sót.
 \end{itemize}
 
-\textbf{3. Trade-off giữa Precision và Recall}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/visualizations_20251230_135903/fig3_confusion_matrix_gb.png}
+  \caption{Confusion Matrix của mô hình Gradient Boosting.}
+  \label{fig:fig3_confusion_matrix_gb}
+\end{figure}
 
-Một quan sát quan trọng là sự đánh đổi (trade-off) giữa Precision và Recall:
+Kết hợp với ROC-AUC cao, điều này gợi ý mô hình có chất lượng \textit{ranking} tốt nhưng \textbf{threshold mặc định}
+chưa chắc tối ưu. Do đó, một khuyến nghị quan trọng là thực hiện \textbf{threshold tuning} theo chi phí FP/FN
+hoặc theo mục tiêu kinh doanh (ví dụ: tối ưu lợi nhuận kỳ vọng thay vì tối ưu Accuracy/F1).
+
+\subsubsection{Vai trò của class imbalance và hướng xử lý}
+
+Dữ liệu có \textbf{class imbalance} (tỷ lệ Purchase thấp). Trong các bài toán như vậy, mô hình thường dễ nghiêng về lớp đa số,
+dẫn đến \textbf{Recall(Purchase)} bị hạn chế nếu không có cơ chế hiệu chỉnh.
+Trong notebook, phần kết luận kỹ thuật cũng khuyến nghị các kỹ thuật xử lý class imbalance cho môi trường production
+(ví dụ: \textit{class weights}, SMOTE, hoặc các ensemble phù hợp).
+
+\textbf{Khuyến nghị kỹ thuật (định hướng cải tiến):}
 \begin{itemize}
-    \item Khi tăng Recall (phát hiện được nhiều khách hàng có ý định mua hơn), Precision có xu hướng giảm (tăng số lượng dự đoán sai).
-    \item SMOTE thường cung cấp sự cân bằng tốt hơn giữa hai độ đo này so với Random Oversampling.
+  \item \textbf{Class weights / cost-sensitive learning:} ưu tiên giảm FN nếu mục tiêu là bắt nhiều Purchase.
+  \item \textbf{Resampling (SMOTE / oversampling / undersampling có kiểm soát):} tăng khả năng học đặc trưng lớp Purchase,
+        nhưng cần kiểm soát overfitting và leakage trong pipeline.
+  \item \textbf{Đánh giá bổ sung bằng PR-AUC:} trong bối cảnh class imbalance, PR-AUC thường phản ánh chất lượng mô hình hữu ích hơn ROC-AUC.
 \end{itemize}
 
-\subsubsection{Phân tích tầm quan trọng thuộc tính}
+\subsubsection{Diễn giải tầm quan trọng thuộc tính (Feature Importance) và insight hành vi}
 
-Dựa trên phân tích Feature Importance từ Random Forest, các thuộc tính quan trọng nhất được xác định như sau:
-
-\textbf{Top 5 thuộc tính quan trọng:}
-\begin{enumerate}
-    \item \textbf{PageValues}: Thuộc tính quan trọng nhất, phản ánh giá trị trung bình của các trang được khách hàng truy cập. Giá trị cao cho thấy khách hàng đang xem các trang có liên quan đến quyết định mua hàng.
-
-    \item \textbf{ExitRates}: Tỷ lệ thoát trang cao cho thấy khách hàng có xu hướng rời bỏ website, giảm khả năng mua hàng.
-
-    \item \textbf{BounceRates}: Tương tự ExitRates, tỷ lệ thoát ngay (chỉ xem một trang rồi rời đi) là dấu hiệu tiêu cực.
-
-    \item \textbf{ProductRelated\_Duration}: Thời gian xem trang sản phẩm càng lâu, khả năng mua hàng càng cao.
-
-    \item \textbf{ProductRelated}: Số lượng trang sản phẩm được xem cũng là một chỉ báo tích cực.
-\end{enumerate}
-
-\textbf{Các thuộc tính phân loại quan trọng:}
+Phân tích EDA và phần \textit{feature importance} (đối với các mô hình tree-based) cho thấy các tín hiệu mạnh nhất liên quan đến Purchase gồm:
+\textbf{PageValues}, \textbf{ExitRates}, \textbf{BounceRates}, \textbf{ProductRelated\_Duration}, và \textbf{ProductRelated}.
+Các biến phân loại quan trọng gồm \textbf{Month}, \textbf{VisitorType}, và \textbf{Weekend}.
+Các insight này có giá trị vì vừa \textit{predictive} vừa \textit{actionable}:
 \begin{itemize}
-    \item \textbf{Month}: Tháng 11 (November) có tỷ lệ mua hàng cao nhất, liên quan đến Black Friday và các chương trình khuyến mãi cuối năm.
-    \item \textbf{VisitorType}: Khách hàng quay lại (Returning Visitor) có tỷ lệ chuyển đổi cao hơn.
-    \item \textbf{Weekend}: Phiên truy cập vào cuối tuần có hành vi khác biệt so với ngày thường.
+  \item \textbf{PageValues} cao thường phản ánh hành trình gần chuyển đổi.
+  \item \textbf{ExitRates/BounceRates} cao là tín hiệu trải nghiệm kém hoặc nội dung/định hướng chưa phù hợp.
+  \item \textbf{ProductRelated\_Duration} cao phản ánh mức độ cân nhắc mua lớn hơn.
+  \item \textbf{Returning Visitor} có xu hướng chuyển đổi cao hơn.
+  \item \textbf{Month} cho thấy yếu tố mùa vụ/chiến dịch (ví dụ các tháng cao điểm như November/May theo EDA).
 \end{itemize}
+
+\subsubsection{Tính tái lập kết quả (Reproducibility)}
+
+Bên cạnh notebook, dự án có \texttt{validate\_analysis.py} để chạy kiểm chứng pipeline theo hướng “hồi quy kết quả”:
+tải dữ liệu, tiền xử lý, huấn luyện nhiều mô hình, tổng hợp bảng metric và phân tích thuộc tính.
+Đây là điểm cộng quan trọng trong bối cảnh học thuật bậc cao học vì giúp giảm phụ thuộc vào trạng thái notebook, đồng thời
+tạo nền tảng cho kiểm thử tự động (CI) khi mở rộng dự án.
 
 %=================================================================================
 \subsection{Hàm ý kinh doanh (Business Implications)}
 \label{subsec:business_implications}
 
-Dựa trên kết quả phân tích và mô hình hóa, chúng tôi đề xuất các chiến lược kinh doanh cụ thể cho ShopSmart E-commerce:
+Dựa trên các tín hiệu dự đoán quan trọng và hành vi quan sát được, phần này đề xuất các chiến lược có thể triển khai cho ShopSmart E-commerce.
+Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần được hiệu chỉnh qua A/B testing.
 
 \subsubsection{1. Tối ưu hóa Page Value}
 
-\textbf{Vấn đề}: PageValues là thuộc tính dự đoán quan trọng nhất, nhưng nhiều trang trên website hiện có giá trị thấp.
+\textbf{Cơ sở}: \textbf{PageValues} là tín hiệu mạnh nhất liên quan Purchase, phản ánh mức “tiến gần chuyển đổi”.
 
-\textbf{Đề xuất:}
+\textbf{Đề xuất}:
 \begin{itemize}
-    \item Phân tích các trang có PageValue cao để xác định các yếu tố thành công.
-    \item Tối ưu hóa nội dung và thiết kế các trang có PageValue thấp.
-    \item Thêm các yếu tố thúc đẩy hành động (call-to-action) vào các trang quan trọng.
-    \item Cải thiện quy trình checkout để giảm friction.
+  \item Phân rã nhóm trang có PageValues cao để xác định yếu tố thành công (nội dung, bố cục, CTA, tốc độ tải).
+  \item Tối ưu các trang có PageValues thấp: cải thiện CTA, thông tin sản phẩm, trust signals (đổi trả, bảo hành, đánh giá).
+  \item Rà soát và tối ưu funnel checkout nhằm giảm \textit{friction}.
 \end{itemize}
 
-\textbf{KPI mục tiêu}: Tăng trung bình PageValue lên 20\% trong 6 tháng.
+\textbf{KPI mục tiêu (gợi ý)}: tăng trung bình PageValues 15--20\% trong 6 tháng, đo lường kèm conversion rate và revenue/session.
 
 \subsubsection{2. Giảm Exit Rate và Bounce Rate}
 
-\textbf{Vấn đề}: Tỷ lệ thoát trang và tỷ lệ bỏ ngay cao là dấu hiệu của trải nghiệm người dùng kém.
+\textbf{Cơ sở}: \textbf{ExitRates} và \textbf{BounceRates} cao là tín hiệu tiêu cực và liên quan mạnh đến giảm xác suất Purchase.
 
-\textbf{Đề xuất:}
+\textbf{Đề xuất}:
 \begin{itemize}
-    \item Triển khai exit-intent popup với ưu đãi hấp dẫn cho khách hàng có xu hướng rời đi.
-    \item Cải thiện tốc độ tải trang (page load time) để giảm bounce rate.
-    \item Tối ưu hóa thanh điều hướng (navigation) để khách hàng dễ dàng tìm kiếm sản phẩm.
-    \item Cung cấp nội dung liên quan (related content) để giữ chân khách hàng.
-    \item A/B testing các landing page để xác định phiên bản hiệu quả nhất.
+  \item Tối ưu tốc độ tải trang và hiệu năng mobile (giảm bounce do chậm).
+  \item Cải thiện điều hướng và tìm kiếm: filter/sort, suggestion, autocomplete.
+  \item Thử nghiệm \textit{exit-intent} (popup/offer) cho nhóm entries có xác suất rời đi cao.
+  \item A/B testing landing page theo từng nguồn traffic.
 \end{itemize}
 
-\textbf{KPI mục tiêu}: Giảm Exit Rate trung bình xuống 15\% và Bounce Rate xuống 10\%.
+\textbf{KPI mục tiêu (gợi ý)}: giảm ExitRates và BounceRates theo percentile (p50/p75) thay vì chỉ trung bình để tránh bị outlier chi phối.
 
 \subsubsection{3. Tăng cường tương tác với trang sản phẩm}
 
-\textbf{Vấn đề}: ProductRelated và ProductRelated\_Duration là các chỉ báo quan trọng, nhưng nhiều khách hàng chỉ xem ít trang sản phẩm.
+\textbf{Cơ sở}: \textbf{ProductRelated} và \textbf{ProductRelated\_Duration} tăng tương quan với Purchase.
 
-\textbf{Đề xuất:}
+\textbf{Đề xuất}:
 \begin{itemize}
-    \item Cải thiện chất lượng hình ảnh và mô tả sản phẩm.
-    \item Thêm video sản phẩm và đánh giá từ khách hàng.
-    \item Triển khai hệ thống gợi ý sản phẩm (product recommendations) dựa trên hành vi duyệt web.
-    \item Sử dụng infinite scroll hoặc ``Xem thêm sản phẩm'' để khuyến khích khách hàng khám phá.
-    \item Tạo các bộ sưu tập sản phẩm (collections) theo chủ đề.
+  \item Nâng chất lượng trang sản phẩm: ảnh, video, mô tả, so sánh, FAQ, review.
+  \item Gợi ý sản phẩm theo hành vi (recommendations) và theo ngữ cảnh (similar/compatible items).
+  \item Thiết kế hành trình khám phá: collections theo chủ đề, “Xem thêm”, cross-sell/upsell hợp lý.
 \end{itemize}
 
-\textbf{KPI mục tiêu}: Tăng trung bình số trang sản phẩm xem mỗi phiên lên 30\%.
+\textbf{KPI mục tiêu (gợi ý)}: tăng số trang sản phẩm xem/entry 20--30\% và tăng thời gian ở trang sản phẩm nhưng vẫn kiểm soát drop-off.
 
-\subsubsection{4. Nhắm mục tiêu khách hàng quay lại}
+\subsubsection{4. Nhắm mục tiêu Returning Visitors}
 
-\textbf{Vấn đề}: Returning Visitors có tỷ lệ chuyển đổi cao hơn nhưng chiếm tỷ lệ nhỏ.
+\textbf{Cơ sở}: \textbf{Returning Visitor} có tỷ lệ chuyển đổi cao hơn.
 
-\textbf{Đề xuất:}
+\textbf{Đề xuất}:
 \begin{itemize}
-    \item Triển khai chương trình khách hàng thân thiết (loyalty program).
-    \item Sử dụng email marketing cá nhân hóa để đưa khách hàng quay lại.
-    \item Cung cấp ưu đãi đặc biệt cho khách hàng quay lại (returning customer discounts).
-    \item Triển khai remarketing qua Facebook Ads và Google Ads.
-    \item Gửi thông báo về sản phẩm trong ``wishlist'' hoặc giỏ hàng bị bỏ.
+  \item Loyalty program và ưu đãi theo mức độ trung thành.
+  \item Email/SMS/push cá nhân hóa theo hành vi (browse abandonment, cart abandonment).
+  \item Remarketing theo phân khúc: high-intent vs low-intent.
 \end{itemize}
 
-\textbf{KPI mục tiêu}: Tăng tỷ lệ khách hàng quay lại lên 25\%.
+\textbf{KPI mục tiêu (gợi ý)}: tăng tỷ lệ returning users và tăng conversion rate của returning segment.
 
-\subsubsection{5. Tối ưu hóa theo mùa vụ}
+\subsubsection{5. Tối ưu hóa theo mùa vụ (Seasonality)}
 
-\textbf{Vấn đề}: Tỷ lệ mua hàng biến động theo tháng, với đỉnh điểm vào tháng 11 (November).
+\textbf{Cơ sở}: biến \textbf{Month} phản ánh seasonality; EDA cho thấy một số tháng có tỷ lệ Purchase cao hơn.
 
-\textbf{Đề xuất:}
+\textbf{Đề xuất}:
 \begin{itemize}
-    \item Lập kế hoạch marketing chi tiết cho các tháng cao điểm (tháng 5, 11, 12).
-    \item Chuẩn bị hàng tồn kho và nhân lực cho Black Friday và mùa lễ hội.
-    \item Triển khai các chương trình khuyến mãi đặc biệt cho các tháng thấp điểm để kích thích nhu cầu.
-    \item Tạo các sự kiện mua sắm theo chủ đề cho từng mùa.
+  \item Lập kế hoạch tồn kho, nội dung, ngân sách ads theo tháng cao điểm.
+  \item Tạo chiến dịch kích cầu tháng thấp điểm (bundle, free-ship, limited-time offer).
+  \item Chuẩn hóa dashboard theo tháng để phát hiện drift theo mùa.
 \end{itemize}
 
-\textbf{KPI mục tiêu}: Tăng doanh thu tháng cao điểm lên 40\% so với trung bình năm.
+\textbf{KPI mục tiêu (gợi ý)}: tăng uplift doanh thu mùa cao điểm, đồng thời giảm biến động tháng thấp điểm.
 
 %=================================================================================
 \subsection{Đề xuất triển khai hệ thống dự đoán (Deployment Recommendations)}
 \label{subsec:deployment}
 
-Để áp dụng mô hình vào thực tế, ShopSmart E-commerce cần triển khai hệ thống dự đoán theo các bước sau:
+Ba hạng mục triển khai tối thiểu (mang tính thực dụng) gồm:
 
-\subsubsection{Kiến trúc hệ thống đề xuất}
-
-\begin{enumerate}
-    \item \textbf{Thu thập dữ liệu thời gian thực}:
-    \begin{itemize}
-        \item Tích hợp Google Analytics hoặc công cụ tracking tương tự.
-        \item Thu thập dữ liệu clickstream trong thời gian thực.
-        \item Lưu trữ dữ liệu phiên truy cập vào database.
-    \end{itemize}
-
-    \item \textbf{Xử lý và dự đoán}:
-    \begin{itemize}
-        \item Pipeline tiền xử lý dữ liệu tự động.
-        \item Model serving với REST API.
-        \item Dự đoán xác suất mua hàng cho mỗi phiên.
-    \end{itemize}
-
-    \item \textbf{Hành động tự động}:
-    \begin{itemize}
-        \item Nếu xác suất mua cao ($>$ 70\%): Đề xuất sản phẩm premium, upselling.
-        \item Nếu xác suất mua trung bình (30-70\%): Hiển thị ưu đãi, giảm giá.
-        \item Nếu xác suất mua thấp ($<$ 30\%) và có dấu hiệu rời đi: Popup exit-intent với coupon.
-    \end{itemize}
-\end{enumerate}
-
-\subsubsection{Lộ trình triển khai}
-
-\textbf{Giai đoạn 1: Pilot Testing}
+\subsubsection{Thu thập dữ liệu (near real-time)}
 \begin{itemize}
-    \item Triển khai thử nghiệm với 10\% traffic.
-    \item A/B testing so sánh với hệ thống hiện tại.
-    \item Đánh giá tác động lên conversion rate và doanh thu.
+  \item Tracking events (GA/SDK nội bộ) và tổng hợp theo \textbf{entry}.
+  \item Lưu trữ vào data store (stream + warehouse) để phục vụ inference và phân tích.
 \end{itemize}
 
-\textbf{Giai đoạn 2: Mở rộng}
+\subsubsection{Xử lý và dự đoán (preprocess + inference)}
 \begin{itemize}
-    \item Triển khai cho toàn bộ website.
-    \item Tích hợp với hệ thống CRM hiện có.
-    \item Huấn luyện đội ngũ marketing sử dụng insights từ mô hình.
+  \item Pipeline tiền xử lý đúng chuẩn huấn luyện (one-hot, scaling) và kiểm soát schema.
+  \item Model serving qua REST/gRPC; trả về \textbf{p(Purchase)} thay vì nhãn cứng.
+  \item Cân nhắc \textbf{calibration} (Platt/isotonic) trước khi ra quyết định theo threshold.
 \end{itemize}
 
-\textbf{Giai đoạn 3: Tối ưu hóa liên tục}
+\subsubsection{Hành động (decisioning) và đo lường}
 \begin{itemize}
-    \item Thu thập feedback và cải thiện mô hình.
-    \item Huấn luyện lại mô hình định kỳ (hàng tháng hoặc hàng quý).
-    \item Mở rộng tính năng với personalization nâng cao.
+  \item Rule engine dựa trên xác suất:
+    \begin{itemize}
+      \item $p > 0.70$: ưu tiên upsell/premium recommendation.
+      \item $0.30 \le p \le 0.70$: hiển thị ưu đãi nhẹ hoặc gợi ý sản phẩm phù hợp.
+      \item $p < 0.30$ và có dấu hiệu rời đi: exit-intent coupon ở mức chi phí kiểm soát.
+    \end{itemize}
+  \item A/B testing bắt buộc để đo uplift (conversion, AOV, revenue, churn).
 \end{itemize}
 
 %=================================================================================
 \subsection{Hạn chế của nghiên cứu (Limitations)}
 \label{subsec:limitations}
 
-Nghiên cứu này có một số hạn chế cần được lưu ý:
-
 \subsubsection{Hạn chế về dữ liệu}
-
 \begin{itemize}
-    \item \textbf{Nguồn dữ liệu đơn lẻ}: Dataset được thu thập từ một website thương mại điện tử tại Thổ Nhĩ Kỳ, có thể không hoàn toàn phản ánh hành vi khách hàng Việt Nam.
-
-    \item \textbf{Thời gian thu thập}: Dữ liệu được thu thập trong khoảng thời gian 1 năm (2017-2018), có thể đã lỗi thời so với hành vi người dùng hiện tại.
-
-    \item \textbf{Session-based tracking}: Dữ liệu chỉ theo dõi từng phiên truy cập riêng lẻ, không theo dõi hành vi xuyên suốt của cùng một người dùng qua nhiều phiên.
-
-    \item \textbf{Thiếu thông tin sản phẩm}: Không có dữ liệu chi tiết về loại sản phẩm, giá cả, hoặc danh mục sản phẩm.
-
-    \item \textbf{Thiếu thông tin nhân khẩu học}: Không có thông tin về độ tuổi, giới tính, thu nhập của khách hàng.
+  \item \textbf{Nguồn dữ liệu đơn lẻ}: dataset thu thập từ một website TMĐT (bối cảnh Thổ Nhĩ Kỳ) nên tính khái quát hóa sang thị trường khác có thể hạn chế \cite{sakar2018}.
+  \item \textbf{Tính thời điểm}: dữ liệu theo một giai đoạn lịch sử; hành vi người dùng có thể thay đổi theo thời gian (thiết bị, UX, kênh ads).
+  \item \textbf{Theo dõi theo entry}: dữ liệu ở mức entry, chưa mô tả đầy đủ hành vi xuyên nhiều entries của cùng người dùng (thiếu user journey).
+  \item \textbf{Thiếu ngữ cảnh sản phẩm}: không có category/price/promotion chi tiết nên khó phân tích theo danh mục và chiến lược giá.
+  \item \textbf{Thiếu nhân khẩu học}: không có biến demographic (tuổi, giới tính, thu nhập) để phân khúc sâu.
 \end{itemize}
 
 \subsubsection{Hạn chế về phương pháp}
-
 \begin{itemize}
-    \item \textbf{Thuật toán giới hạn}: Chỉ thử nghiệm 4 thuật toán cơ bản, chưa khám phá các phương pháp nâng cao như Deep Learning, Gradient Boosting (XGBoost, LightGBM).
-
-    \item \textbf{Feature engineering cơ bản}: Chưa thực hiện các kỹ thuật feature engineering nâng cao như tạo các tương tác thuộc tính (feature interactions), polynomial features.
-
-    \item \textbf{Hyperparameter tuning hạn chế}: Việc tối ưu hóa siêu tham số được thực hiện thủ công, chưa sử dụng các kỹ thuật tự động như Grid Search hoặc Bayesian Optimization.
-
-    \item \textbf{Thiếu đánh giá kinh tế}: Chưa tính toán chi phí-lợi ích (cost-benefit analysis) cụ thể của việc triển khai mô hình.
+  \item \textbf{Đánh giá hold-out}: thí nghiệm dựa trên một lần chia train/test; nên bổ sung Stratified K-Fold để kết luận vững hơn.
+  \item \textbf{Hyperparameter tuning}: mô hình sử dụng cấu hình cơ bản; cần tuning (Randomized/Bayesian) cho top-model.
+  \item \textbf{Chưa tối ưu theo kinh tế}: hiện tối ưu theo metric ML; triển khai thực tế nên tối ưu theo utility (profit uplift) và chi phí FP/FN.
+  \item \textbf{Class imbalance chưa xử lý trong training}: cần thử class weights/resampling và đánh giá PR-AUC, calibration.
 \end{itemize}
 
 \subsubsection{Hạn chế về triển khai}
-
 \begin{itemize}
-    \item \textbf{Môi trường giả định}: Bối cảnh ShopSmart E-commerce là hư cấu, chưa được kiểm chứng trong môi trường thực tế.
-
-    \item \textbf{Thiếu A/B testing thực tế}: Các đề xuất kinh doanh cần được kiểm chứng qua A/B testing trước khi triển khai rộng rãi.
-
-    \item \textbf{Vấn đề scalability}: Chưa đánh giá khả năng mở rộng của mô hình khi xử lý hàng triệu phiên truy cập.
+  \item \textbf{Bối cảnh giả định}: ShopSmart là tình huống mô phỏng; cần kiểm chứng qua dữ liệu vận hành thực.
+  \item \textbf{Chưa có A/B testing thực nghiệm}: mọi khuyến nghị kinh doanh cần A/B testing để đo uplift và kiểm soát rủi ro.
+  \item \textbf{Chưa đánh giá scalability}: inference real-time ở lưu lượng lớn cần đánh giá latency, throughput, và chi phí hạ tầng.
 \end{itemize}
-
