@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\caption{Kết quả đánh giá các mô hình trên tập kiểm thử (test set).}
+\label{tab:model_metrics}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
+\midrule
+Gradient Boosting      & 0.901865 & 0.725806 & 0.589005 & 0.650289 & 0.927936 \\
+XGBoost                & 0.892133 & 0.682390 & 0.568063 & 0.620000 & 0.919550 \\
+Random Forest          & 0.897405 & 0.729537 & 0.536649 & 0.618401 & 0.917758 \\
+Decision Tree          & 0.863747 & 0.561828 & 0.547120 & 0.554377 & 0.734453 \\
+Support Vector Machine & 0.884428 & 0.701245 & 0.442408 & 0.542536 & 0.873646 \\
+Logistic Regression    & 0.881184 & 0.743169 & 0.356021 & 0.481416 & 0.887273 \\
+K-Nearest Neighbors    & 0.868613 & 0.636792 & 0.353403 & 0.454545 & 0.772459 \\
+Naive Bayes            & 0.676399 & 0.297665 & 0.801047 & 0.434043 & 0.797426 \\
+\bottomrule
+\end{tabular}
+\end{table}

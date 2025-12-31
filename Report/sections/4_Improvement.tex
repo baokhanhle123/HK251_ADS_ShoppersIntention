@@ -18,25 +18,7 @@ tại Hình~\ref{fig:fig1_f1_auc}, khi các mô hình này cùng lúc có \textb
 các mô hình tuyến tính hoặc dựa trên khoảng cách (KNN). Điều này hàm ý dữ liệu hành vi có nhiều \textit{quan hệ phi tuyến}
 và \textit{tương tác thuộc tính}.
 
-\begin{table}[H]
-\centering
-\caption{Kết quả đánh giá các mô hình trên tập kiểm thử (test set).}
-\label{tab:model_metrics}
-\begin{tabular}{lccccc}
-\toprule
-\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{ROC-AUC} \\
-\midrule
-Gradient Boosting      & 0.901865 & 0.725806 & 0.589005 & 0.650289 & 0.927936 \\
-XGBoost                & 0.892133 & 0.682390 & 0.568063 & 0.620000 & 0.919550 \\
-Random Forest          & 0.897405 & 0.729537 & 0.536649 & 0.618401 & 0.917758 \\
-Decision Tree          & 0.863747 & 0.561828 & 0.547120 & 0.554377 & 0.734453 \\
-Support Vector Machine & 0.884428 & 0.701245 & 0.442408 & 0.542536 & 0.873646 \\
-Logistic Regression    & 0.881184 & 0.743169 & 0.356021 & 0.481416 & 0.887273 \\
-K-Nearest Neighbors    & 0.868613 & 0.636792 & 0.353403 & 0.454545 & 0.772459 \\
-Naive Bayes            & 0.676399 & 0.297665 & 0.801047 & 0.434043 & 0.797426 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/model_metrics}
 
 \begin{figure}[H]
   \centering
@@ -132,7 +114,7 @@ tạo nền tảng cho kiểm thử tự động (CI) khi mở rộng dự án.
 Dựa trên các tín hiệu dự đoán quan trọng và hành vi quan sát được, phần này đề xuất các chiến lược có thể triển khai cho ShopSmart E-commerce.
 Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần được hiệu chỉnh qua A/B testing.
 
-\subsubsection{1. Tối ưu hóa Page Value}
+\subsubsection{Tối ưu hóa Page Value}
 
 \textbf{Cơ sở}: \textbf{PageValues} là tín hiệu mạnh nhất liên quan Purchase, phản ánh mức “tiến gần chuyển đổi”.
 
@@ -145,7 +127,7 @@ Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần 
 
 \textbf{KPI mục tiêu (gợi ý)}: tăng trung bình PageValues 15--20\% trong 6 tháng, đo lường kèm conversion rate và revenue/session.
 
-\subsubsection{2. Giảm Exit Rate và Bounce Rate}
+\subsubsection{Giảm Exit Rate và Bounce Rate}
 
 \textbf{Cơ sở}: \textbf{ExitRates} và \textbf{BounceRates} cao là tín hiệu tiêu cực và liên quan mạnh đến giảm xác suất Purchase.
 
@@ -159,7 +141,7 @@ Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần 
 
 \textbf{KPI mục tiêu (gợi ý)}: giảm ExitRates và BounceRates theo percentile (p50/p75) thay vì chỉ trung bình để tránh bị outlier chi phối.
 
-\subsubsection{3. Tăng cường tương tác với trang sản phẩm}
+\subsubsection{Tăng cường tương tác với trang sản phẩm}
 
 \textbf{Cơ sở}: \textbf{ProductRelated} và \textbf{ProductRelated\_Duration} tăng tương quan với Purchase.
 
@@ -172,7 +154,7 @@ Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần 
 
 \textbf{KPI mục tiêu (gợi ý)}: tăng số trang sản phẩm xem/entry 20--30\% và tăng thời gian ở trang sản phẩm nhưng vẫn kiểm soát drop-off.
 
-\subsubsection{4. Nhắm mục tiêu Returning Visitors}
+\subsubsection{Nhắm mục tiêu Returning Visitors}
 
 \textbf{Cơ sở}: \textbf{Returning Visitor} có tỷ lệ chuyển đổi cao hơn.
 
@@ -185,7 +167,7 @@ Lưu ý: các KPI nêu dưới đây là mục tiêu định hướng và cần 
 
 \textbf{KPI mục tiêu (gợi ý)}: tăng tỷ lệ returning users và tăng conversion rate của returning segment.
 
-\subsubsection{5. Tối ưu hóa theo mùa vụ (Seasonality)}
+\subsubsection{Tối ưu hóa theo mùa vụ (Seasonality)}
 
 \textbf{Cơ sở}: biến \textbf{Month} phản ánh seasonality; EDA cho thấy một số tháng có tỷ lệ Purchase cao hơn.
 
